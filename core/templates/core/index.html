@@ -1,15 +1,55 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'core/css/style.css' %}">
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Inicio</title>
     <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <h1>Hola desde Django</h1>
-    <button onclick="saludar()">Haz clic</button>
+    <main class="main">
+        <div class="top">
+            <div class="nav" id="nav">
+                <i class="fa fa-bars" id="menu-toggle" aria-hidden="true"></i>
+                <ul class="links desktop-links">
+                <li><a href="#">Más productos</a></li>
+                <li><a href="#">Precios más bajos</a></li>
+                <li><a href="#">Mejores reseñas</a></li>
+                <li><a href="#">Mayor cantidad de máquinas</a></li>
+                <li><a href="#">Ofertas</a></li>
+                </ul>
+        </div>
+        <div class="signup">
+            <ul>
+                <li><a href="#">Iniciar Sesión</a></li>
+                <li><a href="#">Registrarse</a></li>
+            </ul>
+        </div>
+        
+        <div class="links-div" id="mobile-menu">
+                <ul class="links">
+                <li><a href="#">Más productos</a></li>
+                <li><a href="#">Precios más bajos</a></li>
+                <li><a href="#">Mejores reseñas</a></li>
+                <li><a href="#">Mayor cantidad de máquinas</a></li>
+                <li><a href="#">Ofertas</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="center">
+            <div>
+                <h1 class="h1">GMSearch</h1>
+                <p>El mejor sitio para buscar gimnasios</p>
+            </div>
+            <div>
+                <input type="text" class="search" name="search" placeholder="Encuentra el gym ideal para ti...">
+                <span><i class="fa fa-search" aria-hidden="true"></i></span>
+            </div>
+        </div>
+
+    </main>
 
     <script src="{% static 'core/js/main.js' %}"></script>
 </body>
