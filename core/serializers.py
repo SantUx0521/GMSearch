@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
+from django.core.mail import send_mail
 from .models import (
     Usuario, Gimnasio, FichaBiometrica, ClienteGimnasio, Favorito,
     Rutina, Maquina, Inventario
@@ -21,8 +22,15 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data['password'])
-        return Usuario.objects.create(**validated_data)
-
+        usuario = Usuario.objects.create(**validated_data)
+        send_mail(
+            'Confirmación de Registro',
+            'Gracias por registrarte en nuestro sistema.',
+            'Gimnasio Web',
+            [usuario.email],
+            fail_silently=False,
+        )
+        return usuario
 
 # ------------------------
 # Gimnasio
