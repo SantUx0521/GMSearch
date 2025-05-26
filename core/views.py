@@ -82,19 +82,19 @@ class FavoritoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return Favorito.objects.filter(usuario=user)
+        queryset = Favorito.objects.filter(usuario=user)
+        gimnasio_qs = queryset.values_list('gimnasio', flat=True)
 
-    def get_queryset(self):
-        queryset = Gimnasio.objects.all()
+        # Aplicar filtros adicionales si es necesario
         ubicacion = self.request.query_params.get('ubicacion')
         precio_max = self.request.query_params.get('precio_max')
         calificacion = self.request.query_params.get('calificacion')
 
         if ubicacion:
-            queryset = queryset.filter(ubicacion__icontains=ubicacion)
+            gimnasio_qs = gimnasio_qs.filter(ubicacion__icontains=ubicacion)
         if precio_max:
-            queryset = queryset.filter(precio_inscripcion__lte=precio_max)
+            gimnasio_qs = gimnasio_qs.filter(precio_inscripcion__lte=precio_max)
         if calificacion:
-            queryset = queryset.filter(calificacion__gte=calificacion)
+            gimnasio_qs = gimnasio_qs.filter(calificacion__gte=calificacion)
 
-        return queryset
+        return queryset.filter(gimnasio__in=gimnasio_qs)
