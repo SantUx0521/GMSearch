@@ -1,15 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
-from core.models import Usuario  # Asegúrate de importar el modelo, no el serializer
-
-class FichaBiometrica(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name='ficha_biometrica')
-    altura = models.DecimalField(max_digits=5, decimal_places=2)
-    peso = models.DecimalField(max_digits=5, decimal_places=2)
-
-    def __str__(self):
-        return f"Ficha de {self.usuario.nombre}"
 
 class UsuarioManager(BaseUserManager):
     def create_user(self, email, nombre, password=None, **extra_fields):
@@ -45,6 +36,15 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+
+class FichaBiometrica(models.Model):
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name='ficha_biometrica')
+    altura = models.DecimalField(max_digits=5, decimal_places=2)
+    peso = models.DecimalField(max_digits=5, decimal_places=2)
+
+    def __str__(self):
+        return f"Ficha de {self.usuario.nombre}"
+    
 class Gimnasio(models.Model):
     codigo_gym = models.AutoField(primary_key=True)
     dueño = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='gimnasios')
