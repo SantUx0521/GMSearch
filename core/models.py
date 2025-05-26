@@ -1,30 +1,49 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+
+from core.models import Usuario  # Asegúrate de importar el modelo, no el serializer
 
 class FichaBiometrica(models.Model):
-    ficha_usuario = models.AutoField(primary_key=True)
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name='ficha_biometrica')
     altura = models.DecimalField(max_digits=5, decimal_places=2)
     peso = models.DecimalField(max_digits=5, decimal_places=2)
 
     def __str__(self):
-        return f"Ficha {self.ficha_usuario}"
+        return f"Ficha de {self.usuario.nombre}"
 
-class Usuario(models.Model):
-    username = None  # Eliminamos el campo username original
+class UsuarioManager(BaseUserManager):
+    def create_user(self, email, nombre, password=None, **extra_fields):
+        if not email:
+            raise ValueError('El correo electrónico es obligatorio.')
+        email = self.normalize_email(email)
+        user = self.model(email=email, nombre=nombre, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, nombre, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        return self.create_user(email, nombre, password, **extra_fields)
+
+class Usuario(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    
     nombre = models.CharField(max_length=100)
     direccion = models.CharField(max_length=255)
     telefono = models.CharField(max_length=20)
     es_dueño = models.BooleanField(default=False)
+    
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
+    objects = UsuarioManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['nombre']
 
     def __str__(self):
         return self.email
-
-    def __str__(self):
-        return self.nombre
 
 class Gimnasio(models.Model):
     codigo_gym = models.AutoField(primary_key=True)
