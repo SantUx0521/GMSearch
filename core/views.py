@@ -7,6 +7,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from .models import *
 from .serializers import *
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import GimnasioFilter
 
 def index(request):
     return render(request, 'core/index.html') #Esto es necesario para seguir con la arquitectura cliente-servidor.
@@ -39,9 +41,12 @@ class LoginView(APIView):
 # ----------------------------
 # Gimnasio
 # ----------------------------
+
 class GimnasioViewSet(viewsets.ModelViewSet):
     queryset = Gimnasio.objects.all()
     serializer_class = GimnasioSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = GimnasioFilter
 
 
 # ----------------------------
