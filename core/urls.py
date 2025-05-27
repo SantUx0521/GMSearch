@@ -1,16 +1,12 @@
-from django.urls import path
-from . import views
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from . import views
+
 from .views import (
     RegistroUsuarioView, LoginView,
     GimnasioViewSet, RutinaViewSet, InventarioViewSet,
     MaquinaViewSet, FavoritoViewSet
 )
-#urlpatterns = [
- #   path('', views.index, name='index'),
-#]
-
 
 router = DefaultRouter()
 router.register(r'gimnasios', GimnasioViewSet)
@@ -20,7 +16,13 @@ router.register(r'maquinas', MaquinaViewSet)
 router.register(r'favoritos', FavoritoViewSet)
 
 urlpatterns = [
-    path('registro/', RegistroUsuarioView.as_view(), name='registro'),
-    path('login/', LoginView.as_view(), name='login'),
-    path('', include(router.urls)),
+    # Vistas HTML
+    path('', views.index, name='index'),
+    path('login-page/', views.login_page, name='login'),  # página de login HTML
+    path('register-page/', views.register_page, name='register'),  # página de registro HTML
+
+    # Endpoints API
+    path('api/registro/', RegistroUsuarioView.as_view(), name='api_registro'),
+    path('api/login/', LoginView.as_view(), name='api_login'),
+    path('api/', include(router.urls)),
 ]

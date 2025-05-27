@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión</title>
+  <link rel="stylesheet" href="{% static 'core/css/login.css' %}">
+</head>
+<body>
+  <div class="main">
+    <div class="center">
+      <h1>Iniciar sesión</h1>
+      <form method="post">
+            <div class="Username">
+                <input type="email" required>
+                <label>Correo électronico</label>
+            </div>
+            <div class="Username">
+                <input type="password" required>
+                <label>Contraseña</label>
+            </div>
+
+            <div class= "recordar">¿Olvido su contraseña?</div>
+            <input type="submit" value="Iniciar sesion">
+            <div class= "registrarse">
+                <a href="{% url 'register' %}">Registrarse</a>
+            </div>
+    </form>
+    </div>
+  </div>
+</body>
+</html>

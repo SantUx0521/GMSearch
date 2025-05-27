@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrarse</title>
+  <link rel="stylesheet" href="{% static 'core/css/login.css' %}">
+</head>
+<body>
+  <div class="main">
+    <div class="center">
+      <h1>Registrarse</h1>
+      <form method="post">
+            <div class="Username">
+                <input type="text" required>
+                <label>Nombre de usuario</label>
+            </div>
+            <div class="Username">
+                <input type="email" required>
+                <label>Correo électronico</label>
+            </div>
+            <div class="Username">
+                <input type="password" required>
+                <label>Contraseña</label>
+            </div>
+            <input type="submit" value="Iniciar sesion">
+            <div class= "iniciar">
+                ¿Ya se registró?<a href="{% url 'login' %}">Iniciar sesion</a>
+            </div>
+    </form>
+    </div>
+  </div>
+</body>
+</html>

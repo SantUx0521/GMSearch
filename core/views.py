@@ -98,3 +98,12 @@ class FavoritoViewSet(viewsets.ModelViewSet):
             gimnasio_qs = gimnasio_qs.filter(calificacion__gte=calificacion)
 
         return queryset.filter(gimnasio__in=gimnasio_qs)
+
+#----------------------------
+# Login (HTML)
+# ---------------------------    
+def login_page(request):
+    return render(request, 'core/login.html')
+
+def register_page(request):
+    return render(request, 'core/register.html')
