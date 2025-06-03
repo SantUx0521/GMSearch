@@ -106,3 +106,32 @@ input[type="submit"]:hover{
     font-size: 16px;
     color: black;
 }
+@media screen and (max-width: 750px) {
+  .main .center .search {
+    width: 500px;
+  }
+}
+
+@media screen and (max-width: 580px) {
+  .top .fa-bars {
+    display: block; 
+  }
+
+  .nav .links {
+    display: none;
+  }
+
+  .main .center .search {
+    width: 350px;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .main .center .h1 {
+    font-size: 80px;
+  }
+
+  .main .center .search {
+    width: 250px;
+  }
+}

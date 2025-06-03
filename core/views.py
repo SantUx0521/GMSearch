@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -107,3 +107,6 @@ def login_page(request):
 
 def register_page(request):
     return render(request, 'core/register.html')
+
+def post_reg(request):
+    return render(request, 'core/PostRegister.html') 
