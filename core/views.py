@@ -110,3 +110,6 @@ def register_page(request):
 
 def post_reg(request):
     return render(request, 'core/PostRegister.html') 
+
+def profile(request):
+    return render(request, 'core/profile.html')

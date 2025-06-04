@@ -12,7 +12,8 @@
     <div class="center">
       <h1>Bienvenido Usuario</h1>
       <h2>Por favor, rellene los siguientes datos para completar su registro a nuestra plataforma!</h2>
-      <form method="post">
+      <form method="post"action="{% url 'profile' %}">
+            {% csrf_token %}
             <div class="User">
                 <input type="text" required>
                 <label>Nombres</label>

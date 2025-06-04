@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="{% static 'core/css/profile.css' %}">
+
+</head>
+<body>
+    
+    <article class = "card">
+        <h1>Perfil de usuario</h1>
+            <header class = "card_header">
+                <div class="profile_pic"></div>
+            </header>
+            <button>editar perfil</button>
+            <section class="card_body">
+                <p class = "user">Nombre usuario
+                    <span class = "age"> 20(edad usuario) </span>
+                </p>
+                <p class="height">altura usuario</p>
+                <p class="weight"> peso usuario</p>
+                <p class="sex"> sexo usuario</p>
+            </section>
+
+            <form method="post" action="{% url 'index' %}">
+                {% csrf_token %}
+                <input type="submit" value = "salir">
+            </form>
+            
+    </article>
+</body>
+</html>
