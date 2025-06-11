@@ -38,7 +38,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
 
 class FichaBiometrica(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name='ficha_biometrica')
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name='ficha_biometrica', null=True, blank=True)
     altura = models.DecimalField(max_digits=5, decimal_places=2)
     peso = models.DecimalField(max_digits=5, decimal_places=2)
 
