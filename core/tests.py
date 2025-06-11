@@ -3,45 +3,59 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from core.models import Usuario
 
+import pytest
+from core.models import Usuario
+from django.contrib.auth.hashers import make_password
 
-
+@pytest.fixture
+def usuario_existente(db):
+    return Usuario.objects.create(
+        email="existente@example.com",
+        nombre="Usuario Existente",
+        direccion="Calle Real 456",
+        telefono="987654321",
+        es_dueño=False,
+        password=make_password("passwordseguro")
+    )
 
 
 @pytest.mark.django_db
-def test_registro_usuario_exitoso():
+def test_registro_usuario_email_duplicado(usuario_existente):
     client = APIClient()
     payload = {
-        "email": "test@example.com",
-        "nombre": "Juan Pérez",
-        "direccion": "Calle Falsa 123",
-        "telefono": "123456789",
+        "email": "existente@example.com",  # Mismo email que la fixture
+        "nombre": "Otro Nombre",
+        "direccion": "Otra Dirección",
+        "telefono": "111111111",
         "es_dueño": False,
-        "password": "mi_password123"
+        "password": "otra_pass"
     }
 
-    response = client.post("/registro/", payload)
-    assert response.status_code == 201
-    assert Usuario.objects.filter(email="test@example.com").exists()
+    response = client.post("/api/registro/", payload)  # Usa el endpoint real
+    assert response.status_code == 400
+    assert "email" in str(response.data).lower()
 
-#@pytest.mark.django_db
-#def test_registro_usuario_email_duplicado():
- #   client = APIClient()
-  #  Usuario.objects.create_user(
-   #     email="test@example.com",
-    #    nombre="Repetido",
-     #   password="123"
-    #)
+@pytest.mark.django_db
+def test_registro_usuario_email_duplicado():
+    client = APIClient()
+    Usuario.objects.create(
+        email="duplicado@example.com",
+        nombre="Usuario Duplicado",
+        direccion="Calle 1",
+        telefono="000000000",
+        es_dueño=False,
+        password=make_password("password123")  # encriptación manual
+    )
 
-    #payload = {
-     #   "email": "test@example.com",
-      #  "nombre": "Otro Nombre",
-       # "direccion": "Otra Dirección",
-        #"telefono": "111111111",
-        #"es_dueño": False,
-        #"password": "otra_pass"
-    #}
+    payload = {
+        "email": "duplicado@example.com",
+        "nombre": "Nuevo Nombre",
+        "direccion": "Nueva Dirección",
+        "telefono": "111111111",
+        "es_dueño": False,
+        "password": "otra_pass"
+    }
 
-    #response = client.post("/registro/", payload)
-    #assert response.status_code == 400
-    #assert "correo" in str(response.data).lower()
-
+    response = client.post("/api/registro/", payload)
+    assert response.status_code == 400
+    assert "email" in str(response.data).lower()
