@@ -29,6 +29,12 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',  # motor de SQLite
+        'NAME': BASE_DIR / 'db.sqlite3',        # archivo de base de datos
+    }
+}
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -38,8 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_filters',
     'rest_framework.authtoken',  # si usarás autenticación con tokens
     'core',
+    
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -73,17 +81,6 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'H6z+++52',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
