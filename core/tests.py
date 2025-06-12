@@ -1,13 +1,14 @@
 import pytest
 from django.test import TestCase
-from rest_framework.test import APIClient
+from rest_framework.test import APIClient,APITestCase
 from core.models import Usuario
 from .models import Usuario, Gimnasio, Maquina, FichaBiometrica, ClienteGimnasio, Favorito
 from django.db.utils import IntegrityError
-
-import pytest
 from core.models import Usuario
 from django.contrib.auth.hashers import make_password
+from django.urls import reverse
+from rest_framework.authtoken.models import Token
+from rest_framework import status
 
 @pytest.fixture
 def usuario_existente(db):
@@ -160,3 +161,5 @@ class FavoritoModelTest(TestCase):
         Favorito.objects.create(usuario=self.user, gimnasio=self.gym)
         with self.assertRaises(IntegrityError):
             Favorito.objects.create(usuario=self.user, gimnasio=self.gym)
+
+
