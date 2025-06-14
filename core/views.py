@@ -12,6 +12,12 @@ from .serializers import *
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import GimnasioFilter
 from django.contrib.auth import login
+#verificacion de email
+from django.utils import timezone
+from django.core.mail import send_mail
+from django.conf import settings
+import secrets
+from datetime import timedelta
 
 def index(request):
     return render(request, 'core/index.html') #Esto es necesario para seguir con la arquitectura cliente-servidor.
@@ -110,18 +116,51 @@ def login_page(request):
 
 def register_page(request):
     if request.method == 'POST':
-        nombre = request.POST['nombre'] # Solicita al usuario sus datos al momento de ingresar al register
+        nombre = request.POST['nombre']
         email = request.POST['email']
         password = request.POST['password']
+        
+        # Generar token de verificación
+        token = secrets.token_urlsafe(32)
+        fecha_expiracion = timezone.now() + timedelta(hours=24)
+        
         usuario = Usuario.objects.create(
             nombre=nombre,
             email=email,
-            password=make_password(password)
-        ) 
-        request.session['usuario_id'] = usuario.id
-        login(request, usuario) # agrega dichos datos a la bd en la tabla usuario
-        return redirect('post_reg')
+            password=make_password(password),
+            token_verificacion=token,
+            fecha_token=fecha_expiracion
+        )
+        
+        # Enviar email de verificación
+        send_mail(
+            'Verifica tu cuenta en GMSearch',
+            f'Por favor, verifica tu cuenta haciendo clic en el siguiente enlace:\n\n'
+            f'http://{request.get_host()}/verificar-email/{token}/\n\n'
+            f'Este enlace expirará en 24 horas.',
+            settings.DEFAULT_FROM_EMAIL,
+            [email],
+            fail_silently=False,
+        )
+        
+        return render(request, 'core/verificacion_pendiente.html')
     return render(request, 'core/register.html')
+
+def verificar_email(request, token):
+    try:
+        usuario = Usuario.objects.get(token_verificacion=token)
+        if usuario.fecha_token and usuario.fecha_token > timezone.now():
+            usuario.email_verificado = True
+            usuario.is_active = True
+            usuario.token_verificacion = None
+            usuario.fecha_token = None
+            usuario.save()
+            login(request, usuario)
+            return redirect('post_reg')
+        else:
+            return render(request, 'core/token_expirado.html')
+    except Usuario.DoesNotExist:
+        return render(request, 'core/token_invalido.html')
 
 def post_reg(request):
     if request.method == 'POST': # utilizado para añadir datos adicionales sobre el usuario, que se veran desplegados en su profile

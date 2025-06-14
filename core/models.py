@@ -28,17 +28,18 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     direccion = models.CharField(max_length=255)
     telefono = models.CharField(max_length=20)
     es_dueño = models.BooleanField(default=False)
-    
-    is_active = models.BooleanField(default=True)
+    #verificacion de email
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    email_verificado = models.BooleanField(default=False)
+    token_verificacion = models.CharField(max_length=100, blank=True, null=True)
+    fecha_token = models.DateTimeField(blank=True, null=True)
 
     objects = UsuarioManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['nombre']
     
-    objects = UsuarioManager()
-
     def __str__(self):
         return self.email
 

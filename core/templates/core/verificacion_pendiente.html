@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación Pendiente</title>
+    <link rel="stylesheet" href="{% static 'core/css/register.css' %}">
+</head>
+<body>
+    <div class="main">
+        <div class="center">
+            <h1>Verificación Pendiente</h1>
+            <p>Hemos enviado un correo electrónico a tu dirección con un enlace de verificación.</p>
+            <p>Por favor, revisa tu bandeja de entrada y sigue las instrucciones para activar tu cuenta.</p>
+            <p>El enlace expirará en 24 horas.</p>
+            <div class="iniciar">
+                <a href="{% url 'login' %}">Volver al inicio de sesión</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
