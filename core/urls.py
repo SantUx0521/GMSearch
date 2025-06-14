@@ -22,6 +22,7 @@ urlpatterns = [
     path('register-page/', views.register_page, name='register'),  # página de registro HTML
     path('register/', views.post_reg, name='post_reg'), #formulario que solicita datos adicionales al usuario
     path('profile', views.profile, name= "profile"),
+    path('login-usuario/', views.login_usuario, name='login_usuario'),
 
     # Endpoints API
     path('api/registro/', RegistroUsuarioView.as_view(), name='api_registro'),

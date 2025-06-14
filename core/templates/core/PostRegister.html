@@ -12,40 +12,45 @@
     <div class="center">
       <h1>Bienvenido Usuario</h1>
       <h2>Por favor, rellene los siguientes datos para completar su registro a nuestra plataforma!</h2>
-      <form method="post"action="{% url 'profile' %}">
-            {% csrf_token %}
-            <div class="User">
-                <input type="text" required>
-                <label>Nombres</label>
-            </div>
+      <form method="post" action="{% url 'post_reg' %}">
+          {% csrf_token %}
+          <div class="User">
+              <input type="text" name="nombres" required>
+              <label>Nombres</label>
+          </div>
 
-            <div class="User">
-                <input type="text" required>
-                <label>Apellidos</label>
-            </div>
+          <div class="User">
+              <input type="text" name="apellidos" required>
+              <label>Apellidos</label>
+          </div>
+          
+          <div class="User">
+              <input type="text" name="edad" required>
+              <label>edad</label>
+          </div>
 
-            <div class="User">
-                <input type="text" required>
-                <label>Numero de telefono</label>
-            </div>
+          <div class="User">
+              <input type="text" name="telefono" required>
+              <label>Número de teléfono</label>
+          </div>
 
-            <div class="User">
-                <input type="text">
-                <label>Estatura (opcional)</label>
-            </div>
+          <div class="User">
+              <input type="text" name="estatura">
+              <label>Estatura (opcional)</label>
+          </div>
 
-            <div class="User">
-                <input type="text">
-                <label>Peso(opcional)</label>
-            </div>
+          <div class="User">
+              <input type="text" name="peso">
+              <label>Peso (opcional)</label>
+          </div>
 
-            <div class="User">
-                <input type="text" required>
-                <label>Sexo</label>
-            </div>
+          <div class="User">
+              <input type="text" name="sexo" required>
+              <label>Sexo</label>
+          </div>
 
-            <input type="submit" value="Continuar">
-    </form>
+          <input type="submit" value="Continuar">
+      </form>
     </div>
   </div>
 </body>

@@ -11,23 +11,57 @@
   <div class="main">
     <div class="center">
       <h1>Iniciar sesión</h1>
-      <form method="post">
-            <div class="Username">
-                <input type="email" required>
-                <label>Correo électronico</label>
-            </div>
-            <div class="Username">
-                <input type="password" required>
-                <label>Contraseña</label>
-            </div>
+      <form id="loginForm">
+        {% csrf_token %}
+        <div class="Username">
+          <input type="email" id="email" required>
+          <label>Correo electrónico</label>
+        </div>
+        <div class="Username">
+          <input type="password" id="password" required>
+          <label>Contraseña</label>
+        </div>
 
-            <div class= "recordar">¿Olvido su contraseña?</div>
-            <input type="submit" value="Iniciar sesion">
-            <div class= "registrarse">
-                <a href="{% url 'register' %}">Registrarse</a>
-            </div>
-    </form>
+        <div class="recordar">¿Olvidó su contraseña?</div>
+        <input type="submit" value="Iniciar sesión">
+        <div class="registrarse">
+          <a href="{% url 'register' %}">Registrarse</a>
+        </div>
+        <p id="mensaje" style="color: red;"></p>
+      </form>
     </div>
   </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const mensaje = document.getElementById('mensaje');
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const response = await fetch("{% url 'login_usuario' %}", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          window.location.href = "{% url 'profile' %}";
+        } else {
+          mensaje.textContent = data.error || "Error desconocido";
+        }
+      } catch (err) {
+        mensaje.textContent = "Error de conexión";
+      }
+    });
+  </script>
 </body>
 </html>
