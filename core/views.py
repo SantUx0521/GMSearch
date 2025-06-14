@@ -1,3 +1,5 @@
+import json
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
@@ -9,6 +11,7 @@ from .models import *
 from .serializers import *
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import GimnasioFilter
+from django.contrib.auth import login
 
 def index(request):
     return render(request, 'core/index.html') #Esto es necesario para seguir con la arquitectura cliente-servidor.
@@ -106,10 +109,48 @@ def login_page(request):
     return render(request, 'core/login.html')
 
 def register_page(request):
+    if request.method == 'POST':
+        nombre = request.POST['nombre'] # Solicita al usuario sus datos al momento de ingresar al register
+        email = request.POST['email']
+        password = request.POST['password']
+        usuario = Usuario.objects.create(
+            nombre=nombre,
+            email=email,
+            password=make_password(password)
+        ) 
+        request.session['usuario_id'] = usuario.id
+        login(request, usuario) # agrega dichos datos a la bd en la tabla usuario
+        return redirect('post_reg')
     return render(request, 'core/register.html')
 
 def post_reg(request):
-    return render(request, 'core/PostRegister.html') 
+    if request.method == 'POST': # utilizado para añadir datos adicionales sobre el usuario, que se veran desplegados en su profile
+        usuario = request.user
+        usuario.nombres = request.POST.get('nombres')
+        usuario.apellidos = request.POST.get('apellidos')
+        usuario.edad = request.POST.get('edad') or None
+        usuario.telefono = request.POST.get('telefono')
+        usuario.estatura = request.POST.get('estatura') or None
+        usuario.peso = request.POST.get('peso') or None
+        usuario.sexo = request.POST.get('sexo')
+        usuario.save()
+        return redirect('profile')
+    
+    return render(request, 'core/PostRegister.html')
 
 def profile(request):
-    return render(request, 'core/profile.html')
+    usuario = request.user  # necesario para acceder directamente al usuario
+    return render(request, 'core/profile.html', {'usuario': usuario})
+    
+def login_usuario(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        email = data.get('email')
+        password = data.get('password')
+        usuario = authenticate(request, username=email, password=password)
+
+        if usuario is not None:
+            login(request, usuario)
+            return JsonResponse({'mensaje': 'Inicio de sesión exitoso'})
+        else:
+            return JsonResponse({'error': 'correo y/o contraseña incorrecta'}, status=400)
