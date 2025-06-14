@@ -11,7 +11,7 @@ def create_initial_data(apps, schema_editor):
     usuario_dueño = Usuario.objects.create(
         email='dueño@ejemplo.com',
         nombre='Dueño Ejemplo',
-        password=make_password('password123'),
+        password=('password123'),
         direccion='Calle Principal 123',
         telefono='1234567890',
         es_dueño=True

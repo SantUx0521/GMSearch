@@ -21,6 +21,10 @@ class UsuarioManager(BaseUserManager):
 class Usuario(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     nombre = models.CharField(max_length=100)
+    edad = models.IntegerField(null=True, blank=True) 
+    estatura = models.FloatField(null=True, blank=True)
+    peso = models.FloatField(null=True, blank=True)
+    sexo = models.CharField(max_length=10, choices=[('M', 'Masculino'), ('F', 'Femenino')], null=True, blank=True)
     direccion = models.CharField(max_length=255)
     telefono = models.CharField(max_length=20)
     es_dueño = models.BooleanField(default=False)
@@ -32,6 +36,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['nombre']
+    
+    objects = UsuarioManager()
 
     def __str__(self):
         return self.email
