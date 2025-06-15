@@ -18,6 +18,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 import secrets
 from datetime import timedelta
+from django.contrib.auth.hashers import make_password
 
 def index(request):
     return render(request, 'core/index.html') #Esto es necesario para seguir con la arquitectura cliente-servidor.
@@ -119,6 +120,15 @@ def register_page(request):
         nombre = request.POST['nombre']
         email = request.POST['email']
         password = request.POST['password']
+        confirm_password = request.POST.get('confirm_password')
+        
+        # Validar que las contraseñas coincidan
+        if password != confirm_password:
+            return render(request, 'core/register.html', {'error': 'Las contraseñas no coinciden'})
+        
+        # Validar que el correo no esté registrado
+        if Usuario.objects.filter(email=email).exists():
+            return render(request, 'core/register.html', {'error': 'Este correo electrónico ya está registrado'})
         
         # Generar token de verificación
         token = secrets.token_urlsafe(32)
