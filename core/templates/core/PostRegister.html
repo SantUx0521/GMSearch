@@ -10,43 +10,50 @@
 <body>
   <div class="main">
     <div class="center">
-      <h1>Bienvenido Usuario</h1>
+      <h1>Bienvenido {{ nombre_usuario }}</h1>
       <h2>Por favor, rellene los siguientes datos para completar su registro a nuestra plataforma!</h2>
       <form method="post" action="{% url 'post_reg' %}">
           {% csrf_token %}
           <div class="User">
-              <input type="text" name="nombres" required>
+              <input type="text" name="nombres" value="{{ nombre_usuario }}" placeholder="" required>
               <label>Nombres</label>
+              <span></span>
           </div>
 
           <div class="User">
-              <input type="text" name="apellidos" required>
+              <input type="text" name="apellidos" placeholder="" required>
               <label>Apellidos</label>
+              <span></span>
           </div>
           
           <div class="User">
-              <input type="text" name="edad" required>
-              <label>edad</label>
+              <input type="text" name="edad" placeholder="" required>
+              <label>Edad</label>
+              <span></span>
           </div>
 
           <div class="User">
-              <input type="text" name="telefono" required>
+              <input type="text" name="telefono" placeholder="" required>
               <label>Número de teléfono</label>
+              <span></span>
           </div>
 
           <div class="User">
-              <input type="text" name="estatura">
+              <input type="text" name="estatura" placeholder="">
               <label>Estatura (opcional)</label>
+              <span></span>
           </div>
 
           <div class="User">
-              <input type="text" name="peso">
+              <input type="text" name="peso" placeholder="">
               <label>Peso (opcional)</label>
+              <span></span>
           </div>
 
           <div class="User">
-              <input type="text" name="sexo" required>
+              <input type="text" name="sexo" placeholder="" required>
               <label>Sexo</label>
+              <span></span>
           </div>
 
           <input type="submit" value="Continuar">

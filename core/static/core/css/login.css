@@ -71,7 +71,8 @@ form .Username{
 }
 
 .Username input:focus ~ label,
-.Username input:valid ~ label{
+.Username input:valid ~ label,
+.Username input:not(:empty) ~ label {
     top: -5px;
     color:indigo;
     transition: top 0.3s ease, color 0.3s ease;

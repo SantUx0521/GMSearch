@@ -71,9 +71,10 @@ form .Username{
 }
 
 .Username input:focus ~ label,
-.Username input:valid ~ label{
+.Username input:valid ~ label,
+.Username input:not(:empty) ~ label {
     top: -5px;
-    color:indigo;
+    color: indigo;
     transition: top 0.3s ease, color 0.3s ease;
 }
 
@@ -81,9 +82,11 @@ form .Username{
 .Username input:focus ~ span::before{
     width: 100%;
 }
+
 .iniciar{
     text-decoration: underline;
 }
+
 input[type="submit"]{
     width: 100%;
     height: 50px;
@@ -95,6 +98,7 @@ input[type="submit"]{
     cursor: pointer;
     outline: none;
 }
+
 input[type="submit"]:hover{
     border-color: purple;
     transition: .5s;

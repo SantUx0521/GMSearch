@@ -15,28 +15,33 @@
       <p style="color: red; text-align: center;">{{ error }}</p>
       {% endif %}
       <form method="post" action="{% url 'register' %}" id="registerForm">
-         {% csrf_token %}
-            <div class="Username">
-                <input type="text" name="nombre" required>
-                <label>Nombre de usuario</label>
-            </div>
-            <div class="Username">
-                <input type="email" name="email" required>
-                <label>Correo electrónico</label>
-            </div>
-            <div class="Username">
-                <input type="password" name="password" id="password" required>
-                <label>Contraseña</label>
-            </div>
-            <div class="Username">
-                <input type="password" name="confirm_password" id="confirm_password" required>
-                <label>Confirmar contraseña</label>
-            </div>
-            <p id="password_error" style="color: red; display: none;">Las contraseñas no coinciden</p>
-            <input type="submit" value="Registrarse">
-            <div class="iniciar">
-                ¿Ya se registró?<a href="{% url 'login' %}">Iniciar sesión</a>
-            </div>
+        {% csrf_token %}
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <div class="Username">
+            <input type="text" name="nombre" required>
+            <label>Nombre de usuario</label>
+            <span></span>
+        </div>
+        <div class="Username">
+            <input type="email" name="email" required>
+            <label>Correo electrónico</label>
+            <span></span>
+        </div>
+        <div class="Username">
+            <input type="password" name="password" id="password" required>
+            <label>Contraseña</label>
+            <span></span>
+        </div>
+        <div class="Username">
+            <input type="password" name="confirm_password" id="confirm_password" required>
+            <label>Confirmar contraseña</label>
+            <span></span>
+        </div>
+        <p id="password_error" style="color: red; display: none;">Las contraseñas no coinciden</p>
+        <input type="submit" value="Registrarse">
+        <div class="iniciar">
+            ¿Ya se registró?<a href="{% url 'login' %}">Iniciar sesión</a>
+        </div>
       </form>
     </div>
   </div>

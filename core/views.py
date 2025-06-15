@@ -19,6 +19,7 @@ from django.conf import settings
 import secrets
 from datetime import timedelta
 from django.contrib.auth.hashers import make_password
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 def index(request):
     return render(request, 'core/index.html') #Esto es necesario para seguir con la arquitectura cliente-servidor.
@@ -115,6 +116,7 @@ class FavoritoViewSet(viewsets.ModelViewSet):
 def login_page(request):
     return render(request, 'core/login.html')
 
+@ensure_csrf_cookie
 def register_page(request):
     if request.method == 'POST':
         nombre = request.POST['nombre']
@@ -165,12 +167,43 @@ def verificar_email(request, token):
             usuario.token_verificacion = None
             usuario.fecha_token = None
             usuario.save()
+            
+            # Guardar datos en la sesión
+            request.session['nombre_usuario'] = usuario.nombre
+            request.session['email_usuario'] = usuario.email
+            
             login(request, usuario)
             return redirect('post_reg')
         else:
             return render(request, 'core/token_expirado.html')
     except Usuario.DoesNotExist:
         return render(request, 'core/token_invalido.html')
+
+def normalizar_estatura(estatura_str):
+    if not estatura_str:
+        return None
+    
+    # Eliminar espacios y convertir a minúsculas
+    estatura_str = estatura_str.strip().lower()
+    
+    # Si ya está en centímetros (número sin punto ni coma)
+    if estatura_str.isdigit():
+        return float(estatura_str)
+    
+    # Reemplazar coma por punto para estandarizar
+    estatura_str = estatura_str.replace(',', '.')
+    
+    try:
+        # Convertir a float
+        estatura = float(estatura_str)
+        
+        # Si el número es menor a 3, asumimos que está en metros
+        if estatura < 3:
+            return estatura * 100  # Convertir a centímetros
+        else:
+            return estatura  # Ya está en centímetros
+    except ValueError:
+        return None
 
 def post_reg(request):
     if request.method == 'POST': # utilizado para añadir datos adicionales sobre el usuario, que se veran desplegados en su profile
@@ -179,13 +212,22 @@ def post_reg(request):
         usuario.apellidos = request.POST.get('apellidos')
         usuario.edad = request.POST.get('edad') or None
         usuario.telefono = request.POST.get('telefono')
-        usuario.estatura = request.POST.get('estatura') or None
+        
+        # Normalizar la estatura
+        estatura = request.POST.get('estatura')
+        usuario.estatura = normalizar_estatura(estatura)
+        
         usuario.peso = request.POST.get('peso') or None
         usuario.sexo = request.POST.get('sexo')
         usuario.save()
         return redirect('profile')
     
-    return render(request, 'core/PostRegister.html')
+    # Obtener datos de la sesión
+    context = {
+        'nombre_usuario': request.session.get('nombre_usuario', ''),
+        'email_usuario': request.session.get('email_usuario', '')
+    }
+    return render(request, 'core/PostRegister.html', context)
 
 def profile(request):
     usuario = request.user  # necesario para acceder directamente al usuario
