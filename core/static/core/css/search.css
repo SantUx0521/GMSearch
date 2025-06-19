@@ -1,0 +1,60 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    color: black;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(img/fondo7.jpg);
+    background-position: center center;
+    background-size: cover; 
+    position: relative;
+    overflow: hidden;
+    height: 100vh;
+}
+
+.titulo {
+    color: whitesmoke;
+    font-size: 24px;
+}
+
+.contenedor-gimnasios {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 30px;
+}
+
+.card {
+    position: relative;
+    background-color: white;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    border: 1px solid #ddd;
+}
+
+.card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    display: block;
+}
+
+.banner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: purple;
+    color: white;
+    font-weight: bold;
+    padding: 5px 10px;
+    font-size: 14px;
+    border-bottom-right-radius: 10px;
+}
+
+.info {
+    padding: 10px;
+}
+
+.info p {
+    margin: 5px 0;
+}

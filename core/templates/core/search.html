@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscar Gimnasios</title>
+    <link rel="stylesheet" href="{% static 'core/css/search.css' %}">
+</head>
+<body>
+    <div class= 'titulo'>
+    <h1 style="text-align: center;">GMSearch</h1>
+    </div>
+
+    <div class="contenedor-gimnasios">
+        {% for gym in gimnasios %}
+        <div class="card">
+            <div class="banner">{{ gym.nombre_gym }}</div>
+            {% if gym.imagen %}
+            <img src="{{ gym.imagen.url }}" alt="Imagen de {{ gym.nombre_gym }}">
+            {% else %}
+            <img src="{% static 'img/default-gym.jpg' %}" alt="Sin imagen">
+            {% endif %}
+            <div class="info">
+                <p><strong>Ubicación:</strong> {{ gym.ubicacion }}</p>
+                <p><strong>Precio inscripción:</strong> ${{ gym.precio_inscripcion }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <p>No hay gimnasios disponibles.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

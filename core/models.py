@@ -61,6 +61,7 @@ class Gimnasio(models.Model):
     precio_inscripcion = models.DecimalField(max_digits=8, decimal_places=2)
     descripcion = models.TextField()
     vistas = models.IntegerField(default=0)
+    imagen = models.ImageField(upload_to='gimnasios/', null=True, blank=True)
 
     def __str__(self):
         return self.nombre_gym

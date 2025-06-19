@@ -150,6 +150,22 @@ ul li {
   padding: .5em;
 }
 
+.logout-link {
+  background-color: transparent;
+  border: 1px solid white;
+  border-radius: 30px;
+  color: white;
+  padding: 0.55em 0.85em;
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: 300ms;
+}
+
+.logout-link:hover {
+  background-color: white;
+  color: black;
+}
 
 @media screen and (max-width: 750px) {
   .main .center .search {
@@ -169,7 +185,16 @@ ul li {
   .main .center .search {
     width: 350px;
   }
+  .user-menu {
+        margin-left: auto;
+    }
+
+    .dropdown {
+        right: 0;
+        left: auto;
+  }
 }
+
 
 @media screen and (max-width: 420px) {
   .main .center .h1 {

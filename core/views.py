@@ -20,6 +20,7 @@ import secrets
 from datetime import timedelta
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.contrib.auth import logout
 
 def index(request):
     return render(request, 'core/index.html') #Esto es necesario para seguir con la arquitectura cliente-servidor.
@@ -245,3 +246,12 @@ def login_usuario(request):
             return JsonResponse({'mensaje': 'Inicio de sesión exitoso'})
         else:
             return JsonResponse({'error': 'correo y/o contraseña incorrecta'}, status=400)
+        
+def search(request):
+    gimnasios = Gimnasio.objects.all()  
+    return render(request, 'core/search.html', {'gimnasios': gimnasios})
+
+def logout_view(request):
+    if request.method == 'POST':
+        logout(request)
+    return redirect('index')

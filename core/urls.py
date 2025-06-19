@@ -1,6 +1,8 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 from .views import (
     RegistroUsuarioView, LoginView,
@@ -24,9 +26,11 @@ urlpatterns = [
     path('profile', views.profile, name= "profile"),
     path('login-usuario/', views.login_usuario, name='login_usuario'),
     path('verificar-email/<str:token>/', views.verificar_email, name='verificar_email'),
+    path('search/', views.search, name= 'search'),
+    path('logout/', views.logout_view, name='logout'),
 
     # Endpoints API
     path('api/registro/', RegistroUsuarioView.as_view(), name='api_registro'),
     path('api/login/', LoginView.as_view(), name='api_login'),
     path('api/', include(router.urls)),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
