@@ -138,3 +138,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'alejandro.mayorga@correounivalle.edu.co'
 EMAIL_HOST_PASSWORD = 'opvlmvgmzojeofyi'  # Contraseña de aplicación sin espacios
 DEFAULT_FROM_EMAIL = 'GMSearch <alejandro.mayorga@correounivalle.edu.co>'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
