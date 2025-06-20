@@ -120,6 +120,7 @@ def login_page(request):
 @ensure_csrf_cookie
 def register_page(request):
     if request.method == 'POST':
+        tipo = request.POST.get('tipo_usuario')
         nombre = request.POST['nombre']
         email = request.POST['email']
         password = request.POST['password']
@@ -142,7 +143,8 @@ def register_page(request):
             email=email,
             password=make_password(password),
             token_verificacion=token,
-            fecha_token=fecha_expiracion
+            fecha_token=fecha_expiracion,
+            es_dueño=(tipo == 'dueño')
         )
         
         # Enviar email de verificación
@@ -157,6 +159,8 @@ def register_page(request):
         )
         
         return render(request, 'core/verificacion_pendiente.html')
+    if 'register-own' in request.path: #en caso de que el registro venga por parte de un dueño de gimnasio toma los datos del html correspondiente
+        return render(request, 'core/registerOwn.html')
     return render(request, 'core/register.html')
 
 def verificar_email(request, token):
@@ -174,7 +178,10 @@ def verificar_email(request, token):
             request.session['email_usuario'] = usuario.email
             
             login(request, usuario)
-            return redirect('post_reg')
+            if usuario.es_dueño:  
+                return redirect('reg_gym')  
+            else:
+                return redirect('post_reg')
         else:
             return render(request, 'core/token_expirado.html')
     except Usuario.DoesNotExist:
@@ -255,3 +262,23 @@ def logout_view(request):
     if request.method == 'POST':
         logout(request)
     return redirect('index')
+
+def register_gym(request):
+    if request.method == 'POST':
+        nombre_gym = request.POST['nombre_gym']
+        ubicacion = request.POST['ubicacion']
+        precio = request.POST['precio_inscripcion']
+        descripcion = request.POST['descripcion']
+        imagen = request.FILES.get('imagen')
+
+        gimnasio = Gimnasio.objects.create(
+            dueño=request.user,
+            nombre_gym=nombre_gym,
+            ubicacion=ubicacion,
+            precio_inscripcion=precio,
+            descripcion=descripcion,
+            imagen=imagen
+        )
+        return redirect('index')  
+
+    return render(request, 'core/registerGym.html')

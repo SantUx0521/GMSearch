@@ -111,6 +111,23 @@ input[type="submit"]:hover{
     color: black;
 }
 
+.home-icon {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 100px;
+  color: rgb(169, 77, 235);
+  text-decoration: none;
+  z-index: 999;
+  transition: transform 0.2s ease;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.home-icon:hover {
+  transform: scale(1.2);
+  color: rgb(167, 21, 167);
+}
+
 @media screen and (max-width: 750px) {
   .main .center .search {
     width: 500px;

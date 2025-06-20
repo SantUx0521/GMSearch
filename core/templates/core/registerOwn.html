@@ -4,24 +4,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registrarse</title>
+  <title>Registro dueño</title>
   <link rel="stylesheet" href="{% static 'core/css/register.css' %}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
   <div class="main">
     <div class="center">
-      <a href="{% url 'index' %}" class="home-icon" title="Volver al inicio">
+     <a href="{% url 'index' %}" class="home-icon" title="Volver al inicio">
         <i class="fas fa-home"></i>
-      </a>
-      <h1>Registrarse</h1>
+    </a>
+      <h1>Registrarse como dueño de gimnasio</h1>
       {% if error %}
       <p style="color: red; text-align: center;">{{ error }}</p>
       {% endif %}
       <form method="post" action="{% url 'register' %}" id="registerForm">
         {% csrf_token %}
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-        <input type="hidden" name="tipo_usuario" value="cliente">
+        <input type="hidden" name="tipo_usuario" value="dueño">
         <div class="Username">
             <input type="text" name="nombre" required>
             <label>Nombre de usuario</label>
@@ -46,9 +46,6 @@
         <input type="submit" value="Registrarse">
         <div class="iniciar">
             ¿Ya se registró?<a href="{% url 'login' %}">Iniciar sesión</a>
-        </div>
-        <div class="iniciar">
-            ¿Es usted dueño de gimnasio?<a href="{% url 'register_own' %}">Registrese aqui!</a>
         </div>
       </form>
     </div>

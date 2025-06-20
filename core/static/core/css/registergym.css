@@ -2,7 +2,7 @@ body{
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(img/fondo2.jpg);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(img/fondo3.jpg);
     color: black; 
     font-size: 1.2rem;
     background-position: center center;
@@ -120,62 +120,64 @@ input[type="submit"]:hover{
     font-size: 16px;
     color: black;
 }
-
-.User select {
-    width: 100%;
-    padding: 0 50px;
-    height: 40px;
-    font-size: 16px;
-    border: none;
-    background: transparent;
-    outline: none;
-    appearance: none; 
-    color: black;
-    font-family: inherit;
-    position: relative;
-    z-index: 1;
-    cursor: pointer;
+.User.textarea-wrapper {
+  position: relative;
+  margin: 30px 0;
+  border-bottom: 2px solid #adadad;
 }
 
-.User select::-ms-expand {
-    display: none;
+.User.textarea-wrapper textarea {
+  width: 100%;
+  padding: 10px 5px;
+  font-size: 16px;
+  border: none;
+  background: none;
+  resize: none;
+  height: 100px;
+  outline: none;
 }
 
-.User span::before {
-    content: '';
-    position: absolute;
-    top: 40px;
-    left: 0;
-    width: 0%;
-    height: 2px;
-    background: indigo;
-    transition: 0.5s;
+.User.textarea-wrapper label {
+  position: absolute;
+  top: 15px;
+  left: 5px;
+  color: #adadad;
+  font-size: 16px;
+  pointer-events: none;
+  transition: 0.3s ease all;
 }
 
-.User select option {
-    font-size: 16px;
-    padding: 10px;
+.User.textarea-wrapper span::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: indigo;
+  transition: .5s;
 }
 
-.User select:focus ~ label,
-.User select:not([value=""]) ~ label {
-    top: -5px;
-    color: purple;
-    font-size: 14px;
-}
-.User select {
-    background-color: transparent;
-    border-radius: 5px;
-}
-.User select:focus ~ span::before {
-    width: 100%;
+.User.textarea-wrapper textarea:focus ~ label,
+.User.textarea-wrapper textarea:not(:placeholder-shown) ~ label {
+  top: -10px;
+  color: indigo;
+  font-size: 14px;
 }
 
-.User select:focus ~ label,
-.User select:not([value=""]) ~ label {
-    top: -5px;
-    color: indigo;
-    font-size: 14px;
+.User.textarea-wrapper textarea:focus ~ span::before {
+  width: 100%;
+}
+
+.User.file-upload {
+  text-align: center;
+  margin-top: 200px;
+}
+
+.textpic {
+  font-weight: bold;
+  margin-bottom: 0.3em;
+  color: #adadad;
 }
 
 @media screen and (max-width: 750px) {

@@ -6,10 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Iniciar sesión</title>
   <link rel="stylesheet" href="{% static 'core/css/login.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
   <div class="main">
     <div class="center">
+    <a href="{% url 'index' %}" class="home-icon" title="Volver al inicio">
+      <i class="fas fa-home"></i>
+    </a>
       <h1>Iniciar sesión</h1>
       <form id="loginForm">
         {% csrf_token %}
@@ -56,7 +60,7 @@
         const data = await response.json();
 
         if (response.ok) {
-          window.location.href = "{% url 'profile' %}";
+          window.location.href = "{% url 'index' %}";
         } else {
           mensaje.textContent = data.error || "Error desconocido";
         }

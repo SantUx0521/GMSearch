@@ -51,7 +51,11 @@
         <div class="center">
             <div>
                 <h1 class="h1">GMSearch</h1>
+                {% if user.is_authenticated %}
+                <p>Bienvenido {{usuario.nombre}}, encuentra tu nuevo gimnasio </p>
+                {% else %}
                 <p>El mejor sitio para buscar gimnasios</p>
+                {% endif %}
             </div>
             <div>
                 <input type="text" class="search" name="search" placeholder="Encuentra el gym ideal para ti...">

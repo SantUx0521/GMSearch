@@ -22,12 +22,15 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('login-page/', views.login_page, name='login'),  # página de login HTML
     path('register-page/', views.register_page, name='register'),  # página de registro HTML
+    path('register-own/', views.register_page, name='register_own'),
     path('register/', views.post_reg, name='post_reg'), #formulario que solicita datos adicionales al usuario
     path('profile', views.profile, name= "profile"),
     path('login-usuario/', views.login_usuario, name='login_usuario'),
     path('verificar-email/<str:token>/', views.verificar_email, name='verificar_email'),
     path('search/', views.search, name= 'search'),
     path('logout/', views.logout_view, name='logout'),
+    path('register-gym/', views.register_gym, name='reg_gym'),
+    
 
     # Endpoints API
     path('api/registro/', RegistroUsuarioView.as_view(), name='api_registro'),
