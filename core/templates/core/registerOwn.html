@@ -10,10 +10,10 @@
 </head>
 <body>
   <div class="main">
-    <div class="center">
-     <a href="{% url 'index' %}" class="home-icon" title="Volver al inicio">
+    <a href="{% url 'index' %}" class="home-icon" title="Volver al inicio">
         <i class="fas fa-home"></i>
     </a>
+    <div class="center">
       <h1>Registrarse como dueño de gimnasio</h1>
       {% if error %}
       <p style="color: red; text-align: center;">{{ error }}</p>

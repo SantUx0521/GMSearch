@@ -279,6 +279,36 @@ def register_gym(request):
             descripcion=descripcion,
             imagen=imagen
         )
-        return redirect('index')  
+        return redirect('post_register_gym', gimnasio_id=gimnasio.codigo_gym)
 
     return render(request, 'core/registerGym.html')
+
+def post_register_gym(request, gimnasio_id):
+    gimnasio = Gimnasio.objects.get(pk=gimnasio_id)
+
+    if request.method == 'POST':
+        # Datos para las maquinas
+        nombre_maquina = request.POST.get('nombre_maquina')
+        descripcion_maquina = request.POST.get('descripcion_maquina')
+
+        if nombre_maquina and descripcion_maquina:
+            Maquina.objects.create(
+                gimnasio=gimnasio,
+                nombre=nombre_maquina,
+                descripcion=descripcion_maquina
+            )
+
+        # Datos para los productos
+        nombre_prod = request.POST.get('nombre_prod')
+        descripcion_prod = request.POST.get('descripcion_prod')
+        precio_prod = request.POST.get('precio_prod')
+
+        if nombre_prod and descripcion_prod and precio_prod:
+            Inventario.objects.create(
+                gimnasio=gimnasio,
+                nombre_prod=nombre_prod,
+                descripcion=descripcion_prod,
+                precio=precio_prod
+            )
+
+    return render(request, 'core/gymData.html', {'gimnasio': gimnasio})

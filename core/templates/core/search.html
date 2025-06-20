@@ -5,12 +5,16 @@
     <meta charset="UTF-8">
     <title>Buscar Gimnasios</title>
     <link rel="stylesheet" href="{% static 'core/css/search.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <div class= 'titulo'>
     <h1 style="text-align: center;">GMSearch</h1>
     </div>
-
+    <div>
+        <input type="text" class="search" name="search" placeholder="Encuentra el gym ideal para ti...">
+        <span><i class="fa fa-search" aria-hidden="true"></i></span>
+    </div>
     <div class="contenedor-gimnasios">
         {% for gym in gimnasios %}
         <div class="card">

@@ -115,7 +115,7 @@ input[type="submit"]:hover{
   position: absolute;
   top: 20px;
   left: 20px;
-  font-size: 100px;
+  font-size: 50px;
   color: rgb(169, 77, 235);
   text-decoration: none;
   z-index: 999;

@@ -30,6 +30,7 @@ urlpatterns = [
     path('search/', views.search, name= 'search'),
     path('logout/', views.logout_view, name='logout'),
     path('register-gym/', views.register_gym, name='reg_gym'),
+    path('Details_gym/<int:gimnasio_id>/', views.post_register_gym, name='post_register_gym'),
     
 
     # Endpoints API
