@@ -253,6 +253,42 @@ def post_reg(request):
 def profile(request):
     usuario = request.user  # necesario para acceder directamente al usuario
     return render(request, 'core/profile.html', {'usuario': usuario})
+
+def edit_profile(request):
+    usuario = request.user
+    
+    if request.method == 'POST':
+        print("DEBUG: Método POST recibido")
+        print("DEBUG: FILES disponibles:", request.FILES.keys())
+        
+        # Actualizar los datos del usuario
+        usuario.nombre = request.POST.get('nombre', usuario.nombre)
+        usuario.email = request.POST.get('email', usuario.email)
+        usuario.edad = request.POST.get('edad') or None
+        usuario.telefono = request.POST.get('telefono', usuario.telefono)
+        
+        # Normalizar la estatura
+        estatura = request.POST.get('estatura')
+        usuario.estatura = normalizar_estatura(estatura)
+        
+        usuario.peso = request.POST.get('peso') or None
+        usuario.sexo = request.POST.get('sexo', usuario.sexo)
+        
+        # Manejar la subida de la foto de perfil
+        if 'foto_perfil' in request.FILES:
+            print("DEBUG: Foto de perfil encontrada en FILES")
+            usuario.foto_perfil = request.FILES['foto_perfil']
+            print("DEBUG: Foto asignada:", usuario.foto_perfil)
+        else:
+            print("DEBUG: No se encontró foto_perfil en FILES")
+        
+        # Guardar los cambios
+        usuario.save()
+        print("DEBUG: Usuario guardado. Foto actual:", usuario.foto_perfil)
+        
+        return redirect('profile')
+    
+    return render(request, 'core/edit_profile.html', {'usuario': usuario})
     
 def login_usuario(request):
     if request.method == 'POST':

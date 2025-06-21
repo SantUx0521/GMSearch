@@ -13,9 +13,15 @@
     <article class = "card">
         <h1>Perfil de {{ usuario.nombre }}</h1>
             <header class = "card_header">
-                <div class="profile_pic"></div>
+                {% if usuario.foto_perfil %}
+                    <img src="{{ usuario.foto_perfil.url }}" alt="Foto de perfil" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin: 0 auto; display: block; box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);">
+                {% else %}
+                    <div class="profile_pic"></div>
+                {% endif %}
             </header>
-            <button>editar perfil</button>
+            <a href="{% url 'edit_profile' %}" style="text-decoration: none;">
+                <button type="button">editar perfil</button>
+            </a>
             <section class="card_body">
                 <p class="user">
                     {{ usuario.nombre }}
@@ -23,6 +29,7 @@
                         <span class="age">{{ usuario.edad }} años</span>
                     {% endif %}
                     </p>
+                    <p class="email">Email: {{ usuario.email }}</p>
                     <p class="height">{{ usuario.estatura }} cm</p>
                     <p class="weight">{{ usuario.peso }} kg</p>
                     <p class="sex">sexo: {{ usuario.sexo }}</p>
@@ -30,7 +37,7 @@
 
             <form method="post" action="{% url 'index' %}">
                 {% csrf_token %}
-                <input type="submit" value = "salir">
+                <input type="submit" value = "Volver">
             </form>
             
     </article>

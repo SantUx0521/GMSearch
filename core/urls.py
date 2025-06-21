@@ -25,6 +25,7 @@ urlpatterns = [
     path('register-own/', views.register_page, name='register_own'),
     path('register/', views.post_reg, name='post_reg'), #formulario que solicita datos adicionales al usuario
     path('profile', views.profile, name= "profile"),
+    path('edit-profile/', views.edit_profile, name='edit_profile'),
     path('login-usuario/', views.login_usuario, name='login_usuario'),
     path('verificar-email/<str:token>/', views.verificar_email, name='verificar_email'),
     path('search/', views.search, name= 'search'),

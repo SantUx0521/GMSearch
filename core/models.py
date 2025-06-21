@@ -25,6 +25,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     estatura = models.FloatField(null=True, blank=True)
     peso = models.FloatField(null=True, blank=True)
     sexo = models.CharField(max_length=10, choices=[('M', 'Masculino'), ('F', 'Femenino')], null=True, blank=True)
+    foto_perfil = models.ImageField(upload_to='perfiles/', null=True, blank=True)
     direccion = models.CharField(max_length=255)
     telefono = models.CharField(max_length=20)
     es_dueño = models.BooleanField(default=False)

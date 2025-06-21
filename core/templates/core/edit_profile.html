@@ -1,0 +1,210 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil</title>
+    <link rel="stylesheet" href="{% static 'core/css/profile.css' %}">
+    <style>
+        body {
+            overflow-y: auto !important;
+            height: auto !important;
+        }
+        
+        .card {
+            position: relative !important;
+            top: 20px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            height: auto !important;
+            min-height: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin-bottom: 40px;
+        }
+        
+        .form-group {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input, .form-group select {
+            width: 80%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            text-align: center;
+            background-color: white;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: indigo;
+        }
+        
+        .photo-upload {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .current-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 15px;
+            display: block;
+            border: 3px solid indigo;
+        }
+        
+        .photo-input {
+            display: none;
+        }
+        
+        .photo-label {
+            background: indigo;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+        
+        .photo-label:hover {
+            background: rgb(41, 1, 70);
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn-cancel {
+            background: #666 !important;
+            border-color: #666 !important;
+        }
+        
+        .btn-cancel:hover {
+            background: #555 !important;
+            border-color: #555 !important;
+        }
+        
+        .card_body {
+            padding: 20px 40px !important;
+        }
+        
+        .card_header {
+            margin-bottom: 20px;
+        }
+        
+        .profile_pic {
+            background-image: url({% static 'core/css/img/male.jpg' %}) !important;
+        }
+    </style>
+</head>
+<body>
+    <article class="card">
+        <h1>Editar Perfil de {{ usuario.nombre }}</h1>
+        
+        <header class="card_header">
+            {% if usuario.foto_perfil %}
+                <img id="profile-preview" src="{{ usuario.foto_perfil.url }}" alt="Foto de perfil" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin: 0 auto; display: block; box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);">
+            {% else %}
+                <div id="profile-preview" class="profile_pic"></div>
+            {% endif %}
+        </header>
+        
+        <section class="card_body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="photo-upload">
+                    <label for="foto_perfil" class="photo-label">
+                        Cambiar Foto de Perfil
+                    </label>
+                    <input type="file" id="foto_perfil" name="foto_perfil" class="photo-input" accept="image/*">
+                    <p style="font-size: 12px; color: #666; margin-top: 5px;">
+                        Haz clic para seleccionar una nueva imagen
+                    </p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" value="{{ usuario.nombre }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" value="{{ usuario.email }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edad">Edad:</label>
+                    <input type="number" id="edad" name="edad" value="{{ usuario.edad|default:'' }}" min="1" max="120">
+                </div>
+                
+                <div class="form-group">
+                    <label for="telefono">Teléfono:</label>
+                    <input type="tel" id="telefono" name="telefono" value="{{ usuario.telefono|default:'' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="estatura">Estatura (cm):</label>
+                    <input type="number" id="estatura" name="estatura" value="{{ usuario.estatura|default:'' }}" step="0.1" min="50" max="300">
+                </div>
+                
+                <div class="form-group">
+                    <label for="peso">Peso (kg):</label>
+                    <input type="number" id="peso" name="peso" value="{{ usuario.peso|default:'' }}" step="0.1" min="20" max="300">
+                </div>
+                
+                <div class="form-group">
+                    <label for="sexo">Sexo:</label>
+                    <select id="sexo" name="sexo">
+                        <option value="">Seleccionar...</option>
+                        <option value="M" {% if usuario.sexo == 'M' %}selected{% endif %}>Masculino</option>
+                        <option value="F" {% if usuario.sexo == 'F' %}selected{% endif %}>Femenino</option>
+                    </select>
+                </div>
+                
+                <div class="buttons">
+                    <button type="submit">Guardar Cambios</button>
+                    <button type="button" class="btn-cancel" onclick="window.location.href='{% url 'profile' %}'">Cancelar</button>
+                </div>
+            </form>
+        </section>
+    </article>
+    
+    <script>
+        // Mostrar vista previa de la imagen seleccionada
+        document.getElementById('foto_perfil').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewElement = document.getElementById('profile-preview');
+                    if (previewElement.tagName === 'IMG') {
+                        previewElement.src = e.target.result;
+                    } else {
+                        previewElement.style.backgroundImage = `url(${e.target.result})`;
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html> 
