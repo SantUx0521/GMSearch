@@ -110,8 +110,13 @@ body {
     background: rgba(0, 0, 0, 0.6);
     z-index: 999;
 }
+.modal h1{
+    color: indigo;
+}
 .modal-content {
     background: white;
+    max-height: 90vh;
+    overflow-y: auto;
     padding: 2em;
     border-radius: 10px;
     max-width: 600px;
@@ -121,7 +126,8 @@ body {
 .close-btn {
     float: right;
     cursor: pointer;
-    font-size: 1.5em;
+    font-size: 3em;
+    color: indigo;
 }
 
 .home-icon {
@@ -135,6 +141,17 @@ body {
   transition: transform 0.2s ease;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
+
+.rating input { display: none; }
+.rating label {
+    font-size: 1.5em;
+    color: #ccc;
+    cursor: pointer;
+}
+.rating input:checked ~ label {
+    color: gold;
+}
+
 
 .home-icon:hover {
   transform: scale(1.2);

@@ -34,7 +34,7 @@
 
     <div class="contenedor-gimnasios">
         {% for gym in gimnasios %}
-        <div class="card" data-id="{{ gym.codigo_gym }}">
+        <div class="card" data-id="{{ gym.codigo_gym }}" >
             <div class="banner">{{ gym.nombre_gym }}</div>
             {% if gym.imagen %}
                 <img src="{{ gym.imagen.url }}" alt="Imagen de {{ gym.nombre_gym }}">
@@ -51,7 +51,7 @@
         {% endfor %}
     </div>
 
-    <div id="modal-gym" class="modal hidden">
+    <div id="modal-gym" class="modal hidden" style="overflow: auto; scroll-behavior: smooth;">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <div id="modal-body">
@@ -73,14 +73,28 @@ document.addEventListener('DOMContentLoaded', function () {
             fetch(`/api/gimnasio/${gymId}/detalle/`)
                 .then(res => res.json())
                 .then(data => {
+                    const maquinasHtml = data.maquinas.map(m => `
+                        <li><strong>${m.nombre}:</strong> ${m.descripcion || 'Sin descripción'}</li>
+                    `).join('');
+                    const productosHtml = data.productos.map(p => `
+                        <li><strong>${p.nombre_prod}:</strong> ${p.descripcion || 'Sin descripción'} — $${p.precio}</li>
+                    `).join('');
+                    
+
                     document.getElementById('modal-body').innerHTML = `
-                        <h2>${data.nombre_gym}</h2>
+                        <h1>${data.nombre_gym}</h1>
                         <img src="${data.imagen}" style="width:100%; border-radius: 10px; margin-bottom: 1em;">
+
                         <p><strong>Ubicación:</strong> ${data.ubicacion}</p>
                         <p><strong>Precio inscripción:</strong> $${data.precio_inscripcion}</p>
+                        <p><strong>Numero de contacto: </strong> ${data.numero || '<p>No se ha compartido informacion de contacto</p>'}</p>
                         <p><strong>Descripción:</strong> ${data.descripcion}</p>
                         <p><strong>Calificación:</strong> ${data.calificacion} ⭐</p>
-                        <p><strong>Vistas:</strong> ${data.vistas}</p>
+
+                        <h3>Máquinas disponibles:</h3> <ul>${maquinasHtml || '<li>No se registraron máquinas.</li>'}</ul>
+
+                        <h3>Productos disponibles:</h3> <ul>${productosHtml || '<li>No se registraron productos.</li>'}</ul>
+                        
                     `;
                     document.getElementById('modal-gym').classList.remove('hidden');
                 })
@@ -94,6 +108,8 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('modal-gym').classList.add('hidden');
     });
 });
+
+
 </script>
 </body>
 </html>

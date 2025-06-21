@@ -115,3 +115,12 @@ class Inventario(models.Model):
 
     def __str__(self):
         return self.nombre_prod
+    
+class Reseña(models.Model):
+    gimnasio = models.ForeignKey(Gimnasio, on_delete=models.CASCADE, related_name='resenas')
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    estrellas = models.IntegerField(choices=[(i, str(i)) for i in range(6)])  
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.usuario.nombre} - {self.estrellas}⭐"
