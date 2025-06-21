@@ -31,7 +31,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-+-*f3=(6=ftg9wh1oyij6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ['*']  # En producción, especifica tu dominio real
+ALLOWED_HOSTS = ['*']  # Railway configurará automáticamente el dominio
 
 
 # Application definition
@@ -42,9 +42,10 @@ DATABASES = {
     }
 }
 
-# Configuración de base de datos para Heroku
+# Configuración de base de datos para Railway
 db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+if db_from_env:
+    DATABASES['default'].update(db_from_env)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -169,4 +170,4 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
 # Configuración de WhiteNoise para archivos estáticos
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'

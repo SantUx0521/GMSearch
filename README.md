@@ -1,8 +1,8 @@
-#  GMSearch - Plataforma de Búsqueda de Gimnasios
+# GMSearch - Plataforma de Búsqueda de Gimnasios
 
 Una aplicación web desarrollada en Django para buscar, gestionar y conectar usuarios con gimnasios.
 
-##  Características
+## Características
 
 - **Registro y autenticación de usuarios** con verificación por email
 - **Perfiles de usuario** con información personal y biométrica
@@ -12,81 +12,43 @@ Una aplicación web desarrollada en Django para buscar, gestionar y conectar usu
 - **Gestión de rutinas y máquinas** para gimnasios
 - **Interfaz responsive** adaptada a todos los dispositivos
 
-##  Despliegue en Heroku
+##   Despliegue Rápido en Railway
 
-### Prerrequisitos
+### Para usar la página online inmediatamente:
 
-1. **Cuenta de Heroku**: [Regístrate aquí](https://signup.heroku.com/)
-2. **Heroku CLI**: [Descárgalo aquí](https://devcenter.heroku.com/articles/heroku-cli)
-3. **Git**: Asegúrate de tener Git instalado
-4. **SendGrid**: Cuenta para envío de emails
+1. **Ve a [Railway.app](https://railway.app)**
+2. **Conecta tu cuenta de GitHub**
+3. **Selecciona este repositorio**
+4. **Railway detectará automáticamente que es un proyecto Django**
+5. **Configura las variables de entorno:**
+   ```
+   SENDGRID_API_KEY=tu_api_key_de_sendgrid
+   DEBUG=False
+   ```
+6. **¡Listo!** Tu página estará online en minutos
 
-### Pasos para el despliegue
+**No necesitas instalar Python, Django ni nada más.**
 
-#### 1. Clonar el repositorio
-```bash
-git clone https://github.com/SantUx0521/Proyecto-pagina-de-gimnasio-.git
-cd Proyecto-pagina-de-gimnasio-
-```
+### Variables de entorno en Railway
 
-#### 2. Instalar dependencias
-```bash
-pip install -r requirements.txt
-```
+Railway configurará automáticamente:
+- `SECRET_KEY`: Se genera automáticamente
+- `DATABASE_URL`: URL de PostgreSQL (se configura automáticamente)
+- `PORT`: Puerto del servidor (se configura automáticamente)
 
-#### 3. Configurar variables de entorno
-Crea un archivo `.env` en la raíz del proyecto:
-```env
-SECRET_KEY=tu_secret_key_aqui
-DEBUG=False
-SENDGRID_API_KEY=tu_sendgrid_api_key
-```
-
-#### 4. Desplegar en Heroku
-
-**Opción A: Usando el script automático**
-```bash
-chmod +x deploy.sh
-./deploy.sh
-```
-
-**Opción B: Manual**
-```bash
-# Iniciar sesión en Heroku
-heroku login
-
-# Crear aplicación
-heroku create tu-app-name
-
-# Configurar variables de entorno
-heroku config:set DEBUG=False
-heroku config:set SENDGRID_API_KEY=tu_sendgrid_api_key
-
-# Agregar base de datos PostgreSQL
-heroku addons:create heroku-postgresql:mini
-
-# Ejecutar migraciones
-heroku run python manage.py migrate
-
-# Desplegar
-git push heroku main
-
-# Abrir aplicación
-heroku open
-```
-
-### Variables de entorno en Heroku
-
-Configura estas variables en tu aplicación de Heroku:
-
-- `SECRET_KEY`: Clave secreta de Django (se genera automáticamente)
+Solo necesitas configurar:
+- `SENDGRID_API_KEY`: Tu API key de SendGrid para emails
 - `DEBUG`: False para producción
-- `SENDGRID_API_KEY`: Tu API key de SendGrid
-- `DATABASE_URL`: URL de la base de datos PostgreSQL (se configura automáticamente)
 
 ##  Desarrollo Local
 
-### Instalación
+### Si quieres modificar el código:
+
+#### Prerrequisitos
+- Python 3.11 o superior
+- Git
+
+#### Instalación
 
 1. **Clonar el repositorio**
 ```bash
@@ -108,7 +70,7 @@ pip install -r requirements.txt
 4. **Configurar variables de entorno**
 Crea un archivo `.env` en la raíz:
 ```env
-SECRET_KEY=tu_secret_key_aqui
+SECRET_KEY=django-insecure-+-*f3=(6=ftg9wh1oyij6_+)a!(#3m^%ovepdh8_r=a^2x$ja-
 DEBUG=True
 SENDGRID_API_KEY=tu_sendgrid_api_key_aqui
 ```
@@ -146,10 +108,9 @@ Proyecto-pagina-de-gimnasio-/
 │   └── static/             # Archivos estáticos (CSS, JS, imágenes)
 ├── media/                  # Archivos subidos por usuarios
 ├── requirements.txt        # Dependencias de Python
-├── Procfile               # Configuración para Heroku
-├── runtime.txt            # Versión de Python
-├── app.json               # Configuración de Heroku
-└── .env                   # Variables de entorno (no subir al repositorio)
+├── railway.json            # Configuración para Railway
+├── runtime.txt             # Versión de Python
+└── .env                    # Variables de entorno (no subir al repositorio)
 ```
 
 ##  Tecnologías Utilizadas
@@ -158,7 +119,7 @@ Proyecto-pagina-de-gimnasio-/
 - **Base de datos**: SQLite (desarrollo) / PostgreSQL (producción)
 - **Frontend**: HTML5, CSS3, JavaScript
 - **Email**: SendGrid
-- **Despliegue**: Heroku
+- **Despliegue**: Railway
 - **Archivos estáticos**: WhiteNoise
 
 ##  Configuración de Email
@@ -167,7 +128,7 @@ El proyecto usa SendGrid para el envío de emails. Para configurarlo:
 
 1. Crea una cuenta en [SendGrid](https://sendgrid.com/)
 2. Genera una API Key
-3. Configura la variable `SENDGRID_API_KEY` en tu entorno
+3. Configura la variable `SENDGRID_API_KEY` en Railway
 
 ##  Contribuir
 
@@ -183,14 +144,12 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 
 ##  Autores
 
-- *Desarrollo inicial* - [SantUx0521](https://github.com/SantUx0521)
- - **Miguel Angel Arboleda – 2160253**
- - **Alejandro Garzon – 2266088**
- - **Santiago Useche Tascón – 2266200**
-##  Agradecimientos
+- **Alejandro Garzon** - *Desarrollo inicial* - [SantUx0521](https://github.com/SantUx0521)
+
+## Agradecimientos
 
 - Django Documentation
-- Heroku Documentation
+- Railway Documentation
 - SendGrid Documentation
 - Comunidad de desarrolladores de Python
 
