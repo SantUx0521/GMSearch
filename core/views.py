@@ -11,7 +11,16 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .filters import GimnasioFilter
 
 def index(request):
-    return render(request, 'core/index.html') #Esto es necesario para seguir con la arquitectura cliente-servidor.
+    return render(request, 'core/index.html')
+# ----------------------------
+# buscar un gimnasio por nombre
+# ----------------------------
+def buscar_gimnasios(request):  # <--- Aquí la nueva view
+    query = request.GET.get('q', '')
+    resultados = []
+    if query:
+        resultados = Gimnasio.objects.filter(nombre_gym__icontains=query)
+    return render(request, 'core/search.html', {'query': query, 'resultados': resultados})
 
 # ----------------------------
 # Registro de usuario
@@ -38,6 +47,10 @@ class LoginView(APIView):
         return Response({'error': 'Credenciales inválidas'}, status=400)
 
 
+
+
+
+
 # ----------------------------
 # Gimnasio
 # ----------------------------
@@ -47,7 +60,7 @@ class GimnasioViewSet(viewsets.ModelViewSet):
     serializer_class = GimnasioSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = GimnasioFilter
-
+    
 
 # ----------------------------
 # Rutinas
