@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -130,13 +131,13 @@ REST_FRAMEWORK = {
 
 # Configuración de Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-# Pruebas para el envio de correos, se debe de entrar a la cuenta de gmail 
-# y activar la verificacion de dos pasos, para que le deje acceder a la contraseña de aplicacion.
-EMAIL_HOST_USER = 'gymsearch.www@gmail.com'
-EMAIL_HOST_PASSWORD = 'yadewalwpbtoshzj'  # Contraseña de aplicación sin espacios
-DEFAULT_FROM_EMAIL = 'GMSearch <gymsearch.www@gmail.com>'
+EMAIL_HOST_USER = 'apikey'  # ¡literalmente esta palabra!
+EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
+if not EMAIL_HOST_PASSWORD:
+    raise Exception('SENDGRID_API_KEY no está definida en las variables de entorno')
+DEFAULT_FROM_EMAIL = 'gymsearch.www@gmail.com'  # o tu correo verificado en SendGrid
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
