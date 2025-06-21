@@ -7,6 +7,7 @@ body{
     font-size: 1.2rem;
     background-position: center center;
     background-size: cover; 
+    background-attachment: fixed;
     position: relative;
     overflow-x: hidden;
     min-height: 100vh;
@@ -15,6 +16,23 @@ body{
 
 * {
     box-sizing: border-box;
+}
+
+.home-icon {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    font-size: 50px;
+    color: rgb(169, 77, 235);
+    text-decoration: none;
+    z-index: 999;
+    transition: transform 0.2s ease;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.home-icon:hover {
+    transform: scale(1.2);
+    color: rgb(167, 21, 167);
 }
 
 .card{
@@ -171,6 +189,12 @@ input[type="submit"]:hover{
         height: 45px;
         font-size: 16px;
     }
+    
+    .home-icon {
+        font-size: 40px;
+        top: 15px;
+        left: 15px;
+    }
 }
 
 /* Móviles grandes */
@@ -213,6 +237,12 @@ input[type="submit"]:hover{
         font-size: 14px;
         margin: 15px auto;
     }
+    
+    .home-icon {
+        font-size: 35px;
+        top: 10px;
+        left: 10px;
+    }
 }
 
 /* Móviles pequeños */
@@ -246,6 +276,12 @@ input[type="submit"]:hover{
         height: 35px;
         font-size: 13px;
         margin: 10px auto;
+    }
+    
+    .home-icon {
+        font-size: 30px;
+        top: 8px;
+        left: 8px;
     }
 }
 
@@ -283,6 +319,12 @@ input[type="submit"]:hover{
         font-size: 12px;
         margin: 8px auto;
     }
+    
+    .home-icon {
+        font-size: 25px;
+        top: 5px;
+        left: 5px;
+    }
 }
 
 /* Pantallas muy grandes */
@@ -302,7 +344,7 @@ input[type="submit"]:hover{
     }
     
     .card .card_body p {
-        font-size: 1.3rem;
+        font-size: 1.4rem;
         padding: 20px;
     }
     
@@ -310,6 +352,10 @@ input[type="submit"]:hover{
         width: 250px;
         height: 60px;
         font-size: 20px;
+    }
+    
+    .home-icon {
+        font-size: 60px;
     }
 }
 

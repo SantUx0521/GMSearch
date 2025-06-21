@@ -135,8 +135,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 # Pruebas para el envio de correos, se debe de entrar a la cuenta de gmail 
 # y activar la verificacion de dos pasos, para que le deje acceder a la contraseña de aplicacion.
-EMAIL_HOST_USER = 'alejandro.mayorga@correounivalle.edu.co'
-EMAIL_HOST_PASSWORD = 'opvlmvgmzojeofyi'  # Contraseña de aplicación sin espacios
-DEFAULT_FROM_EMAIL = 'GMSearch <alejandro.mayorga@correounivalle.edu.co>'
+EMAIL_HOST_USER = 'gymsearch.www@gmail.com'
+EMAIL_HOST_PASSWORD = 'yadewalwpbtoshzj'  # Contraseña de aplicación sin espacios
+DEFAULT_FROM_EMAIL = 'GMSearch <gymsearch.www@gmail.com>'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

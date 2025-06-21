@@ -1,3 +1,4 @@
+/* Register CSS - Actualizado: 2025-06-21 12:00 */
 body{
     margin: 0;
     padding: 0;
@@ -10,6 +11,10 @@ body{
     position: relative;
     overflow: hidden;
     height: 100vh;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 .center {
