@@ -1,3 +1,4 @@
+from itertools import count
 import json
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -29,6 +30,7 @@ def index(request):
 # ----------------------------
 def buscar_gimnasios(request):  # <--- Aquí la nueva view
     query = request.GET.get('q', '')
+    orden = request.GET.get('orden', '')
 
     if query:
         gimnasios = Gimnasio.objects.filter(nombre_gym__icontains=query)
@@ -36,7 +38,10 @@ def buscar_gimnasios(request):  # <--- Aquí la nueva view
             gimnasios = Gimnasio.objects.all()
     else:
         gimnasios = Gimnasio.objects.all()
-    return render(request, 'core/search.html', {'query': query, 'gimnasios': gimnasios})
+    
+    if orden == 'precios':
+        gimnasios = gimnasios.annotate(num_productos=count('productos')).order_by('-num_productos')
+    return render(request, 'core/search.html', {'query': query, 'gimnasios': gimnasios,  'orden': orden,})
 
 # ----------------------------
 # Registro de usuario
@@ -405,12 +410,13 @@ def gimnasio_detalle_api(request, gimnasio_id):
     except Gimnasio.DoesNotExist:
         raise Http404("Gimnasio no encontrado")
 
-    return JsonResponse({
+    data = {
         'nombre_gym': gym.nombre_gym,
-        'imagen': gym.imagen.url if gym.imagen else '',
         'ubicacion': gym.ubicacion,
-        'precio_inscripcion': str(gym.precio_inscripcion),
+        'precio_inscripcion': float(gym.precio_inscripcion),
         'descripcion': gym.descripcion,
-        'calificacion': gym.calificacion,
-        'vistas': gym.vistas,
-    })
+        'imagen': gym.imagen.url if gym.imagen else '',
+        'maquinas': [{'nombre': m.nombre, 'descripcion': m.descripcion} for m in gym.maquinas.all()],
+        'productos': [{'nombre': p.nombre_prod, 'descripcion': p.descripcion, 'precio': float(p.precio)} for p in gym.productos.all()]
+    }
+    return JsonResponse(data)
