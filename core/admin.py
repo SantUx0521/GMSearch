@@ -9,3 +9,7 @@ admin.site.register(ClienteGimnasio)
 admin.site.register(Favorito)
 admin.site.register(Rutina)
 admin.site.register(Maquina)
+
+class GimnasioAdmin(admin.ModelAdmin):
+    list_display = ('nombre_gym', 'ubicacion', 'precio_inscripcion')
+    fields = ('nombre_gym', 'ubicacion', 'precio_inscripcion', 'descripcion', 'vistas', 'dueño', 'imagen')

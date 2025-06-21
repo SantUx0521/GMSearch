@@ -21,18 +21,25 @@ class UsuarioManager(BaseUserManager):
 class Usuario(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     nombre = models.CharField(max_length=100)
+    edad = models.IntegerField(null=True, blank=True) 
+    estatura = models.FloatField(null=True, blank=True)
+    peso = models.FloatField(null=True, blank=True)
+    sexo = models.CharField(max_length=10, choices=[('M', 'Masculino'), ('F', 'Femenino')], null=True, blank=True)
     direccion = models.CharField(max_length=255)
     telefono = models.CharField(max_length=20)
     es_dueño = models.BooleanField(default=False)
-    
-    is_active = models.BooleanField(default=True)
+    #verificacion de email
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    email_verificado = models.BooleanField(default=False)
+    token_verificacion = models.CharField(max_length=100, blank=True, null=True)
+    fecha_token = models.DateTimeField(blank=True, null=True)
 
     objects = UsuarioManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['nombre']
-
+    
     def __str__(self):
         return self.email
 
@@ -54,6 +61,7 @@ class Gimnasio(models.Model):
     precio_inscripcion = models.DecimalField(max_digits=8, decimal_places=2)
     descripcion = models.TextField()
     vistas = models.IntegerField(default=0)
+    imagen = models.ImageField(upload_to='gimnasios/', null=True, blank=True)
 
     def __str__(self):
         return self.nombre_gym

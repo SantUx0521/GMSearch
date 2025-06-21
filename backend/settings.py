@@ -127,3 +127,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
+
+# Configuración de Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+# Pruebas para el envio de correos, se debe de entrar a la cuenta de gmail 
+# y activar la verificacion de dos pasos, para que le deje acceder a la contraseña de aplicacion.
+EMAIL_HOST_USER = 'alejandro.mayorga@correounivalle.edu.co'
+EMAIL_HOST_PASSWORD = 'opvlmvgmzojeofyi'  # Contraseña de aplicación sin espacios
+DEFAULT_FROM_EMAIL = 'GMSearch <alejandro.mayorga@correounivalle.edu.co>'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

@@ -11,18 +11,21 @@
 <body>
     
     <article class = "card">
-        <h1>Perfil de usuario</h1>
+        <h1>Perfil de {{ usuario.nombre }}</h1>
             <header class = "card_header">
                 <div class="profile_pic"></div>
             </header>
             <button>editar perfil</button>
             <section class="card_body">
-                <p class = "user">Nombre usuario
-                    <span class = "age"> 20(edad usuario) </span>
-                </p>
-                <p class="height">altura usuario</p>
-                <p class="weight"> peso usuario</p>
-                <p class="sex"> sexo usuario</p>
+                <p class="user">
+                    {{ usuario.nombre }}
+                    {% if usuario.edad %}
+                        <span class="age">{{ usuario.edad }} años</span>
+                    {% endif %}
+                    </p>
+                    <p class="height">{{ usuario.estatura }} cm</p>
+                    <p class="weight">{{ usuario.peso }} kg</p>
+                    <p class="sex">sexo: {{ usuario.sexo }}</p>
             </section>
 
             <form method="post" action="{% url 'index' %}">

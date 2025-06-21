@@ -22,10 +22,20 @@
         </div>
         <div class="signup">
             <ul>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'profile' %}">Ver perfil</a></li>
+                <li>
+                    <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">Cerrar sesión</a>
+                    <form id="logout-form" method="post" action="{% url 'logout' %}" style="display: none;">
+                    {% csrf_token %}    
+                    </form>
+                </li>
+                {% else %}
                 <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
                 <li><a href="{% url 'register' %}">Registrarse</a></li>
+                {% endif %}
             </ul>
-        </div>
+            </div>
         
         <div class="links-div" id="mobile-menu">
                 <ul class="links">
@@ -41,7 +51,11 @@
         <div class="center">
             <div>
                 <h1 class="h1">GMSearch</h1>
+                {% if user.is_authenticated %}
+                <p>Bienvenido {{usuario.nombre}}, encuentra tu nuevo gimnasio </p>
+                {% else %}
                 <p>El mejor sitio para buscar gimnasios</p>
+                {% endif %}
             </div>
             <div>
                 <input type="text" class="search" name="search" placeholder="Encuentra el gym ideal para ti...">

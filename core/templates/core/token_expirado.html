@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enlace Expirado</title>
+    <link rel="stylesheet" href="{% static 'core/css/register.css' %}">
+</head>
+<body>
+    <div class="main">
+        <div class="center">
+            <h1>Enlace Expirado</h1>
+            <p>El enlace de verificación ha expirado.</p>
+            <p>Por favor, intenta registrarte nuevamente.</p>
+            <div class="iniciar">
+                <a href="{% url 'register' %}">Volver al registro</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

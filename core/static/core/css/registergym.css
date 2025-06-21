@@ -2,7 +2,7 @@ body{
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(img/fondo-gym1.jpg);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(img/fondo3.jpg);
     color: black; 
     font-size: 1.2rem;
     background-position: center center;
@@ -17,29 +17,34 @@ body{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 400px;
+    height: 700px;
+    width: 900px;
     background: whitesmoke;
-    border-radius: 10px;
+    border-radius: 50px;
 }
-
 .center h1{
     text-align: center;
     padding: 0 0 20px 0;
     border-bottom: 1px solid silver;
 }
-
+.center h2{
+    text-align: center;
+    padding: 0 0 20px 0;
+    font-size: 1em;
+    border-bottom: 1px solid silver;
+}
 .center form{
     padding: 0 50px;
     box-sizing: border-box;
 }
 
-form .Username{
+form .User{
     position: relative;
     border-bottom: 2px solid #adadad;
     margin: 30px 0;
 }
 
-.Username input{
+.User input{
     width: 100%;
     padding: 0 5px;
     height: 40px;
@@ -49,7 +54,12 @@ form .Username{
     outline: none;
 }
 
-.Username label{
+.User input::placeholder {
+    color: #adadad;
+    opacity: 1;
+}
+
+.User label{
     position: absolute;
     top: 50%;
     left: 5px;
@@ -57,9 +67,10 @@ form .Username{
     transform: translateY(-50%);
     font-size: 16px;
     pointer-events: none;
+    transition: 0.3s ease all;
 }
 
-.Username span::before{
+.User span::before{
     content: '';
     position: absolute;
     top: 40px;
@@ -70,21 +81,22 @@ form .Username{
     transition: .5s;
 }
 
-.Username input:focus ~ label,
-.Username input:valid ~ label,
-.Username input:not(:empty) ~ label {
+.User input:focus ~ label,
+.User input:not(:placeholder-shown) ~ label {
     top: -5px;
-    color:indigo;
-    transition: top 0.3s ease, color 0.3s ease;
+    color: indigo;
+    font-size: 14px;
 }
 
-.Username input:focus ~ span::before,
-.Username input:focus ~ span::before{
+.User input:focus ~ span::before,
+.User input:focus ~ span::before{
     width: 100%;
 }
-.recordar{
+
+.iniciar{
     text-decoration: underline;
 }
+
 input[type="submit"]{
     width: 100%;
     height: 50px;
@@ -96,34 +108,78 @@ input[type="submit"]{
     cursor: pointer;
     outline: none;
 }
+
 input[type="submit"]:hover{
     border-color: purple;
     transition: .5s;
 }
 
-.registrarse{
+.iniciar{
     margin: 30px 0;
     text-align: center;
     font-size: 16px;
     color: black;
 }
+.User.textarea-wrapper {
+  position: relative;
+  margin: 30px 0;
+  border-bottom: 2px solid #adadad;
+}
 
-.home-icon {
+.User.textarea-wrapper textarea {
+  width: 100%;
+  padding: 10px 5px;
+  font-size: 16px;
+  border: none;
+  background: none;
+  resize: none;
+  height: 100px;
+  outline: none;
+}
+
+.User.textarea-wrapper label {
   position: absolute;
-  top: 20px;
-  left: 20px;
-  font-size: 50px;
-  color: rgb(169, 77, 235);
-  text-decoration: none;
-  z-index: 999;
-  transition: transform 0.2s ease;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  top: 15px;
+  left: 5px;
+  color: #adadad;
+  font-size: 16px;
+  pointer-events: none;
+  transition: 0.3s ease all;
 }
 
-.home-icon:hover {
-  transform: scale(1.2);
-  color: rgb(167, 21, 167);
+.User.textarea-wrapper span::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: indigo;
+  transition: .5s;
 }
+
+.User.textarea-wrapper textarea:focus ~ label,
+.User.textarea-wrapper textarea:not(:placeholder-shown) ~ label {
+  top: -10px;
+  color: indigo;
+  font-size: 14px;
+}
+
+.User.textarea-wrapper textarea:focus ~ span::before {
+  width: 100%;
+}
+
+.User.file-upload {
+  text-align: center;
+  margin-top: 200px;
+}
+
+.textpic {
+  font-weight: bold;
+  margin-bottom: 0.3em;
+  color: #adadad;
+}
+
 @media screen and (max-width: 750px) {
   .main .center .search {
     width: 500px;
@@ -153,3 +209,6 @@ input[type="submit"]:hover{
     width: 250px;
   }
 }
+
+
+

@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Datos de gimnasio</title>
+  <link rel="stylesheet" href="{% static 'core/css/registergym.css' %}">
+</head>
+<body>
+  <div class="main">
+    <div class="center">
+      <h1>Registrar gimnasio {{ nombre_usuario }}</h1>
+      <h2>Por favor, rellene los siguientes datos para registrar su gimnasio dentro de nuestra plataforma!</h2>
+      <form method="post" action="{% url 'reg_gym' %}" enctype="multipart/form-data">
+            {% csrf_token %}            
+            <div class="User">
+                <input type="text" name="nombre_gym" placeholder="" required>
+                <label>Nombre del gimnasio</label>
+                <span></span>
+            </div>
+
+            <div class="User">
+                <input type="text" name="ubicacion" placeholder="" required>
+                <label>Ubicación del gimnasio</label>
+                <span></span>
+            </div>
+
+            <div class="User">
+                <input type="number" name="precio_inscripcion" step="1000" required>
+                <label>Precio de inscripción</label>
+                <span></span>
+            </div>
+
+            <div class="User textarea-wrapper">
+                <textarea name="descripcion" placeholder=" " required></textarea>
+                <label>Descripción del gimnasio</label>
+                <span></span>
+            </div>
+
+            <div class="User file-input">
+                <p class='textpic'>Sube una imagen del gimnasio</p>
+                <input type="file" id="imagen" name="imagen" accept="image/*" required>
+
+            </div>
+
+          <input type="submit" value="Continuar">
+      </form>
+    </div>
+  </div>
+</body>
+</html>
