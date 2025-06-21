@@ -22,13 +22,14 @@ from datetime import timedelta
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth import logout
+from django.db.models import Avg
 
 def index(request):
     return render(request, 'core/index.html')
 # ----------------------------
 # buscar un gimnasio por nombre
 # ----------------------------
-def buscar_gimnasios(request):  # <--- Aquí la nueva view
+def buscar_gimnasios(request):  
     query = request.GET.get('q', '')
     orden = request.GET.get('orden', '')
 
@@ -360,6 +361,7 @@ def register_gym(request):
         ubicacion = request.POST['ubicacion']
         precio = request.POST['precio_inscripcion']
         descripcion = request.POST['descripcion']
+        numero = request.POST['contacto']
         imagen = request.FILES.get('imagen')
 
         gimnasio = Gimnasio.objects.create(
@@ -370,6 +372,10 @@ def register_gym(request):
             descripcion=descripcion,
             imagen=imagen
         )
+
+        request.user.telefono = numero
+        request.user.save()
+
         return redirect('post_register_gym', gimnasio_id=gimnasio.codigo_gym)
 
     return render(request, 'core/registerGym.html')
@@ -380,26 +386,24 @@ def post_register_gym(request, gimnasio_id):
     if request.method == 'POST':
         # Datos para las maquinas
         nombre_maquina = request.POST.get('nombre_maquina')
-        descripcion_maquina = request.POST.get('descripcion_maquina')
+        cantidad = request.POST.get('cantidad_maquina')
+        categoria = request.POST.get('categoria')
 
-        if nombre_maquina and descripcion_maquina:
+        if nombre_maquina and cantidad and categoria:
             Maquina.objects.create(
                 gimnasio=gimnasio,
                 nombre=nombre_maquina,
-                descripcion=descripcion_maquina
+                descripcion=f"{categoria} - Cantidad: {cantidad}"
             )
 
         # Datos para los productos
-        nombre_prod = request.POST.get('nombre_prod')
-        descripcion_prod = request.POST.get('descripcion_prod')
-        precio_prod = request.POST.get('precio_prod')
-
-        if nombre_prod and descripcion_prod and precio_prod:
+        inventario = request.POST.get('inventario')
+        precio = request.POST.get('precio')
+        if inventario:
             Inventario.objects.create(
                 gimnasio=gimnasio,
-                nombre_prod=nombre_prod,
-                descripcion=descripcion_prod,
-                precio=precio_prod
+                nombre_prod=inventario,
+                precio=precio, 
             )
 
     return render(request, 'core/gymData.html', {'gimnasio': gimnasio})
@@ -407,6 +411,9 @@ def post_register_gym(request, gimnasio_id):
 def gimnasio_detalle_api(request, gimnasio_id):
     try:
         gym = Gimnasio.objects.get(pk=gimnasio_id)
+        maquinas = gym.maquinas.all()
+        maquinas_data = [{"nombre": m.nombre, "descripcion": m.descripcion} for m in maquinas]
+        productos = list(gym.productos.values('nombre_prod', 'descripcion', 'precio'))
     except Gimnasio.DoesNotExist:
         raise Http404("Gimnasio no encontrado")
 
@@ -416,7 +423,8 @@ def gimnasio_detalle_api(request, gimnasio_id):
         'precio_inscripcion': float(gym.precio_inscripcion),
         'descripcion': gym.descripcion,
         'imagen': gym.imagen.url if gym.imagen else '',
-        'maquinas': [{'nombre': m.nombre, 'descripcion': m.descripcion} for m in gym.maquinas.all()],
-        'productos': [{'nombre': p.nombre_prod, 'descripcion': p.descripcion, 'precio': float(p.precio)} for p in gym.productos.all()]
+        "maquinas": maquinas_data,
+        'productos': productos,
     }
     return JsonResponse(data)
+
