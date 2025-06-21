@@ -1,3 +1,4 @@
+
 from itertools import count
 import json
 from django.http import Http404, JsonResponse
@@ -26,6 +27,7 @@ from django.db.models import Avg
 
 def index(request):
     return render(request, 'core/index.html')
+    
 # ----------------------------
 # buscar un gimnasio por nombre
 # ----------------------------
@@ -43,6 +45,19 @@ def buscar_gimnasios(request):
     if orden == 'precios':
         gimnasios = gimnasios.annotate(num_productos=count('productos')).order_by('-num_productos')
     return render(request, 'core/search.html', {'query': query, 'gimnasios': gimnasios,  'orden': orden,})
+
+
+
+
+def recomendar_gimnasio(request):
+    # Obtener los 5 gimnasios con mejor calificación
+    gimnasios_recomendados = Gimnasio.objects.order_by('-calificacion')[:5]
+
+    gimnasios_listados = {
+        'gimnasios_recomendados': gimnasios_recomendados
+    }
+    return render(request, 'core/index.html', gimnasios_listados)
+
 
 # ----------------------------
 # Registro de usuario
@@ -67,6 +82,8 @@ class LoginView(APIView):
             token, created = Token.objects.get_or_create(user=usuario)
             return Response({'token': token.key})
         return Response({'error': 'Credenciales inválidas'}, status=400)
+    
+    
 
 
 
