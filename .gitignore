@@ -178,3 +178,9 @@ db.sqlite3
 
 # PyPI configuration file
 .pypirc
+
+# Heroku
+.env
+*.pyc
+staticfiles/
+.DS_Store
