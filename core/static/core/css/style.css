@@ -149,6 +149,13 @@ ul li {
   cursor: pointer;
   padding: .5em;
 }
+.search-button {
+    background: transparent;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: white;
+}
 
 .logout-link {
   background-color: transparent;

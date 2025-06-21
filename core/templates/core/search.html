@@ -6,23 +6,40 @@
     <title>Buscar Gimnasios</title>
     <link rel="stylesheet" href="{% static 'core/css/search.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    <div class= 'titulo'>
-    <h1 style="text-align: center;">GMSearch</h1>
+    <div class="titulo">
+        <h1 style="text-align: center;">GMSearch</h1>
     </div>
-    <div>
-        <input type="text" class="search" name="search" placeholder="Encuentra el gym ideal para ti...">
-        <span><i class="fa fa-search" aria-hidden="true"></i></span>
+
+    <a href="{% url 'index' %}" class="home-icon" title="Volver al inicio">
+        <i class="fas fa-home"></i>
+    </a>
+
+    <div class="search-container">
+        <form method="get" action="{% url 'buscar_gimnasios' %}" class="search-form">
+            <input type="text" name="q" placeholder="Encuentra el gym ideal para ti..." value="{{ query|default:'' }}">
+            <button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+        </form>
     </div>
+
+    <div class="resultados">
+        {% if query %}
+        <h3>Resultados para "{{ query }}":</h3>
+        {% else %}
+        <h3>Todos los gimnasios disponibles:</h3>
+        {% endif %}
+    </div>
+
     <div class="contenedor-gimnasios">
         {% for gym in gimnasios %}
-        <div class="card">
+        <div class="card" data-id="{{ gym.codigo_gym }}">
             <div class="banner">{{ gym.nombre_gym }}</div>
             {% if gym.imagen %}
-            <img src="{{ gym.imagen.url }}" alt="Imagen de {{ gym.nombre_gym }}">
+                <img src="{{ gym.imagen.url }}" alt="Imagen de {{ gym.nombre_gym }}">
             {% else %}
-            <img src="{% static 'img/default-gym.jpg' %}" alt="Sin imagen">
+                <img src="{% static 'img/default-gym.jpg' %}" alt="Sin imagen">
             {% endif %}
             <div class="info">
                 <p><strong>Ubicación:</strong> {{ gym.ubicacion }}</p>
@@ -33,5 +50,50 @@
         <p>No hay gimnasios disponibles.</p>
         {% endfor %}
     </div>
+
+    <div id="modal-gym" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div id="modal-body">
+            </div>
+        </div>
+        </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('click', function () {
+            const gymId = this.getAttribute('data-id');
+
+            if (!gymId) {
+                console.warn("No se encontró el ID del gimnasio.");
+                return;
+            }
+
+            fetch(`/api/gimnasio/${gymId}/detalle/`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('modal-body').innerHTML = `
+                        <h2>${data.nombre_gym}</h2>
+                        <img src="${data.imagen}" style="width:100%; border-radius: 10px; margin-bottom: 1em;">
+                        <p><strong>Ubicación:</strong> ${data.ubicacion}</p>
+                        <p><strong>Precio inscripción:</strong> $${data.precio_inscripcion}</p>
+                        <p><strong>Descripción:</strong> ${data.descripcion}</p>
+                        <p><strong>Calificación:</strong> ${data.calificacion} ⭐</p>
+                        <p><strong>Vistas:</strong> ${data.vistas}</p>
+                    `;
+                    document.getElementById('modal-gym').classList.remove('hidden');
+                })
+                .catch(err => {
+                    console.error("Error al cargar los datos:", err);
+                });
+        });
+    });
+
+    document.querySelector('.close-btn').addEventListener('click', () => {
+        document.getElementById('modal-gym').classList.add('hidden');
+    });
+});
+</script>
 </body>
 </html>

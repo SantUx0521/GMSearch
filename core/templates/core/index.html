@@ -57,10 +57,13 @@
                 <p>El mejor sitio para buscar gimnasios</p>
                 {% endif %}
             </div>
-            <div>
-                <input type="text" class="search" name="search" placeholder="Encuentra el gym ideal para ti...">
-                <span><i class="fa fa-search" aria-hidden="true"></i></span>
-            </div>
+            <form method="get" action="{% url 'buscar_gimnasios' %}">
+                <input type="text" class="search" name="q" placeholder="Encuentra el gym ideal para ti...">
+                <button type="submit" class="search-button">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+            </form>
+
         </div>
 
     </main>

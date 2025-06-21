@@ -1,6 +1,6 @@
 import json
-from django.http import JsonResponse
-from django.shortcuts import redirect, render
+from django.http import Http404, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -29,10 +29,14 @@ def index(request):
 # ----------------------------
 def buscar_gimnasios(request):  # <--- Aquí la nueva view
     query = request.GET.get('q', '')
-    resultados = []
+
     if query:
-        resultados = Gimnasio.objects.filter(nombre_gym__icontains=query)
-    return render(request, 'core/search.html', {'query': query, 'resultados': resultados})
+        gimnasios = Gimnasio.objects.filter(nombre_gym__icontains=query)
+        if not gimnasios.exists():
+            gimnasios = Gimnasio.objects.all()
+    else:
+        gimnasios = Gimnasio.objects.all()
+    return render(request, 'core/search.html', {'query': query, 'gimnasios': gimnasios})
 
 # ----------------------------
 # Registro de usuario
@@ -394,3 +398,19 @@ def post_register_gym(request, gimnasio_id):
             )
 
     return render(request, 'core/gymData.html', {'gimnasio': gimnasio})
+
+def gimnasio_detalle_api(request, gimnasio_id):
+    try:
+        gym = Gimnasio.objects.get(pk=gimnasio_id)
+    except Gimnasio.DoesNotExist:
+        raise Http404("Gimnasio no encontrado")
+
+    return JsonResponse({
+        'nombre_gym': gym.nombre_gym,
+        'imagen': gym.imagen.url if gym.imagen else '',
+        'ubicacion': gym.ubicacion,
+        'precio_inscripcion': str(gym.precio_inscripcion),
+        'descripcion': gym.descripcion,
+        'calificacion': gym.calificacion,
+        'vistas': gym.vistas,
+    })

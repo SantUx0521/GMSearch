@@ -33,6 +33,7 @@ urlpatterns = [
     path('register-gym/', views.register_gym, name='reg_gym'),
     path('Details_gym/<int:gimnasio_id>/', views.post_register_gym, name='post_register_gym'),
     path('buscar/', views.buscar_gimnasios, name='buscar_gimnasios'),
+    path('api/gimnasio/<int:gimnasio_id>/detalle/', views.gimnasio_detalle_api, name='gimnasio_detalle_api'),
 
     # Endpoints API
     path('api/registro/', RegistroUsuarioView.as_view(), name='api_registro'),
