@@ -282,6 +282,39 @@ def edit_profile(request):
         else:
             print("DEBUG: No se encontró foto_perfil en FILES")
         
+        # Manejar cambio de contraseña
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        if current_password and new_password and confirm_password:
+            # Verificar que la contraseña actual sea correcta
+            if usuario.check_password(current_password):
+                # Verificar que las nuevas contraseñas coincidan
+                if new_password == confirm_password:
+                    # Verificar que la nueva contraseña tenga al menos 8 caracteres
+                    if len(new_password) >= 8:
+                        usuario.set_password(new_password)
+                        print("DEBUG: Contraseña cambiada exitosamente")
+                    else:
+                        print("DEBUG: Nueva contraseña muy corta")
+                        return render(request, 'core/edit_profile.html', {
+                            'usuario': usuario, 
+                            'error': 'La nueva contraseña debe tener al menos 8 caracteres'
+                        })
+                else:
+                    print("DEBUG: Las contraseñas no coinciden")
+                    return render(request, 'core/edit_profile.html', {
+                        'usuario': usuario, 
+                        'error': 'Las nuevas contraseñas no coinciden'
+                    })
+            else:
+                print("DEBUG: Contraseña actual incorrecta")
+                return render(request, 'core/edit_profile.html', {
+                    'usuario': usuario, 
+                    'error': 'La contraseña actual es incorrecta'
+                })
+        
         # Guardar los cambios
         usuario.save()
         print("DEBUG: Usuario guardado. Foto actual:", usuario.foto_perfil)

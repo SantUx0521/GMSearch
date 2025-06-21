@@ -113,11 +113,76 @@
         .profile_pic {
             background-image: url({% static 'core/css/img/male.jpg' %}) !important;
         }
+        
+        .password-section {
+            border-top: 2px solid #e0e0e0;
+            margin-top: 30px;
+            padding-top: 20px;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        .password-section h3 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .form-group input[type="password"] {
+            width: 80%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            text-align: center;
+            background-color: white;
+        }
+        
+        .form-group input[type="password"]:focus {
+            outline: none;
+            border-color: indigo;
+        }
+        
+        .btn-secondary {
+            background: #666 !important;
+            border-color: #666 !important;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid;
+        }
+        
+        .btn-secondary:hover {
+            background: #555 !important;
+            border-color: #555 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body>
     <article class="card">
         <h1>Editar Perfil de {{ usuario.nombre }}</h1>
+        
+        {% if error %}
+        <div style="background-color: #ffebee; color: #c62828; padding: 15px; margin: 20px; border-radius: 10px; border: 1px solid #ef5350; text-align: center;">
+            <strong>Error:</strong> {{ error }}
+        </div>
+        {% endif %}
         
         <header class="card_header">
             {% if usuario.foto_perfil %}
@@ -180,6 +245,31 @@
                     </select>
                 </div>
                 
+                <div class="form-group" style="text-align: center; margin: 30px 0;">
+                    <button type="button" id="show-password-btn" class="btn-secondary" onclick="togglePasswordSection()">
+                         ¿Deseas cambiar tu contraseña?
+                    </button>
+                </div>
+                
+                <div class="password-section" id="password-section" style="display: none;">
+                    <h3> Cambiar Contraseña</h3>
+                    
+                    <div class="form-group">
+                        <label for="current_password">Contraseña Actual:</label>
+                        <input type="password" id="current_password" name="current_password" placeholder="Ingresa tu contraseña actual">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="new_password">Nueva Contraseña:</label>
+                        <input type="password" id="new_password" name="new_password" placeholder="Ingresa tu nueva contraseña">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm_password">Confirmar Nueva Contraseña:</label>
+                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirma tu nueva contraseña">
+                    </div>
+                </div>
+                
                 <div class="buttons">
                     <button type="submit">Guardar Cambios</button>
                     <button type="button" class="btn-cancel" onclick="window.location.href='{% url 'profile' %}'">Cancelar</button>
@@ -205,6 +295,69 @@
                 reader.readAsDataURL(file);
             }
         });
+        
+        // Validación de contraseñas en tiempo real
+        const newPassword = document.getElementById('new_password');
+        const confirmPassword = document.getElementById('confirm_password');
+        
+        function validatePasswords() {
+            const newPass = newPassword.value;
+            const confirmPass = confirmPassword.value;
+            
+            // Remover clases de validación anteriores
+            newPassword.classList.remove('valid', 'invalid');
+            confirmPassword.classList.remove('valid', 'invalid');
+            
+            if (newPass.length > 0) {
+                if (newPass.length >= 8) {
+                    newPassword.classList.add('valid');
+                    newPassword.style.borderColor = '#4caf50';
+                } else {
+                    newPassword.classList.add('invalid');
+                    newPassword.style.borderColor = '#f44336';
+                }
+            }
+            
+            if (confirmPass.length > 0 && newPass.length > 0) {
+                if (newPass === confirmPass) {
+                    confirmPassword.classList.add('valid');
+                    confirmPassword.style.borderColor = '#4caf50';
+                } else {
+                    confirmPassword.classList.add('invalid');
+                    confirmPassword.style.borderColor = '#f44336';
+                }
+            }
+        }
+        
+        newPassword.addEventListener('input', validatePasswords);
+        confirmPassword.addEventListener('input', validatePasswords);
+        
+        // Función para mostrar/ocultar la sección de contraseña
+        function togglePasswordSection() {
+            const passwordSection = document.getElementById('password-section');
+            const showPasswordBtn = document.getElementById('show-password-btn');
+            
+            if (passwordSection.style.display === 'none') {
+                passwordSection.style.display = 'block';
+                showPasswordBtn.innerHTML = ' Ocultar cambio de contraseña';
+                showPasswordBtn.style.background = '#f44336 !important';
+                showPasswordBtn.style.borderColor = '#f44336 !important';
+            } else {
+                passwordSection.style.display = 'none';
+                showPasswordBtn.innerHTML = ' ¿Deseas cambiar tu contraseña?';
+                showPasswordBtn.style.background = '#666 !important';
+                showPasswordBtn.style.borderColor = '#666 !important';
+                
+                // Limpiar los campos de contraseña
+                document.getElementById('current_password').value = '';
+                document.getElementById('new_password').value = '';
+                document.getElementById('confirm_password').value = '';
+                
+                // Limpiar validaciones visuales
+                document.getElementById('new_password').style.borderColor = '#ddd';
+                document.getElementById('confirm_password').style.borderColor = '#ddd';
+            }
+        }
     </script>
 </body>
 </html> 

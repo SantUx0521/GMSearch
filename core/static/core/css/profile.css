@@ -10,6 +10,11 @@ body{
     position: relative;
     overflow-x: hidden;
     min-height: 100vh;
+    box-sizing: border-box;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 .card{
@@ -25,6 +30,9 @@ body{
     border-radius: 50px;
     margin-bottom: 40px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .card h1{
@@ -120,14 +128,26 @@ input[type="submit"]:hover{
     margin: 20px 10px;
 }
 
-/* Media Queries para Responsive Design */
+/* Media Queries para Responsive Design - Actualizado: 2025-06-21 */
+
+/* Pantallas medianas */
+@media screen and (max-width: 1024px) {
+    .card {
+        width: 92%;
+        max-width: 800px;
+        padding: 18px;
+    }
+}
 
 /* Tablets */
 @media screen and (max-width: 768px) {
     .card {
         width: 95%;
+        max-width: none;
         border-radius: 30px;
         top: 10px;
+        padding: 15px;
+        margin: 0 10px 20px 10px;
     }
     
     .card h1 {
@@ -157,9 +177,13 @@ input[type="submit"]:hover{
 @media screen and (max-width: 480px) {
     .card {
         width: 98%;
+        max-width: none;
         border-radius: 20px;
         top: 5px;
-        margin-bottom: 20px;
+        margin: 0 5px 15px 5px;
+        padding: 10px;
+        left: 50%;
+        transform: translateX(-50%);
     }
     
     .card h1 {
@@ -195,7 +219,10 @@ input[type="submit"]:hover{
 @media screen and (max-width: 360px) {
     .card {
         width: 99%;
+        max-width: none;
         border-radius: 15px;
+        padding: 8px;
+        margin: 0 2px 10px 2px;
     }
     
     .card h1 {
@@ -219,6 +246,42 @@ input[type="submit"]:hover{
         height: 35px;
         font-size: 13px;
         margin: 10px auto;
+    }
+}
+
+/* Pantallas muy pequeñas */
+@media screen and (max-width: 320px) {
+    .card {
+        width: 100%;
+        max-width: none;
+        border-radius: 10px;
+        padding: 5px;
+        margin: 0;
+        left: 0;
+        transform: none;
+    }
+    
+    .card h1 {
+        font-size: 1.2rem;
+        padding: 5px 0;
+    }
+    
+    .card .profile_pic {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .card .card_body p {
+        margin: 5px 2px;
+        padding: 6px;
+        font-size: 0.8rem;
+    }
+    
+    button, input[type="submit"] {
+        width: 120px;
+        height: 30px;
+        font-size: 12px;
+        margin: 8px auto;
     }
 }
 
@@ -271,5 +334,35 @@ input[type="submit"]:hover{
     .card .card_body p {
         margin: 8px 5px;
         padding: 8px;
+    }
+}
+
+/* Forzar actualización del responsive - 2025-06-21 */
+@media screen and (max-width: 1200px) {
+    .card {
+        width: 90%;
+        max-width: 900px;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .card {
+        width: 95%;
+        max-width: none;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .card {
+        width: 98%;
+        margin: 0 5px 20px 5px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .card {
+        width: 100%;
+        margin: 0;
+        border-radius: 15px;
     }
 }
