@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db.models import Avg
+from django.utils import timezone
 
 class UsuarioManager(BaseUserManager):
     def create_user(self, email, nombre, password=None, **extra_fields):
@@ -35,6 +36,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     email_verificado = models.BooleanField(default=False)
     token_verificacion = models.CharField(max_length=100, blank=True, null=True)
     fecha_token = models.DateTimeField(blank=True, null=True)
+    date_joined = models.DateTimeField(default=timezone.now)
 
     objects = UsuarioManager()
 

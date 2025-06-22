@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Usuario - Panel de Administrador</title>
+    <link rel="stylesheet" href="{% static 'core/css/admin_panel.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Editar Usuario</h1>
+            <a href="{% url 'admin_usuarios' %}" class="btn btn-secondary">
+                <span class="btn-icon">⬅️</span>
+                Volver a Usuarios
+            </a>
+        </div>
+
+        <div class="admin-form-container">
+            <form method="POST" enctype="multipart/form-data" class="admin-form">
+                {% csrf_token %}
+                
+                <div class="form-section">
+                    <h3>Información Personal</h3>
+                    
+                    <div class="form-group">
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" id="nombre" name="nombre" value="{{ usuario_edit.nombre }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" value="{{ usuario_edit.email }}" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edad">Edad:</label>
+                            <input type="number" id="edad" name="edad" value="{{ usuario_edit.edad|default:'' }}" min="0" max="120">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sexo">Sexo:</label>
+                            <select id="sexo" name="sexo">
+                                <option value="">Seleccionar...</option>
+                                <option value="M" {% if usuario_edit.sexo == 'M' %}selected{% endif %}>Masculino</option>
+                                <option value="F" {% if usuario_edit.sexo == 'F' %}selected{% endif %}>Femenino</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="estatura">Estatura (cm):</label>
+                            <input type="number" id="estatura" name="estatura" value="{{ usuario_edit.estatura|default:'' }}" step="0.1" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="peso">Peso (kg):</label>
+                            <input type="number" id="peso" name="peso" value="{{ usuario_edit.peso|default:'' }}" step="0.1" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Información de Contacto</h3>
+                    
+                    <div class="form-group">
+                        <label for="telefono">Teléfono:</label>
+                        <input type="text" id="telefono" name="telefono" value="{{ usuario_edit.telefono }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="direccion">Dirección:</label>
+                        <input type="text" id="direccion" name="direccion" value="{{ usuario_edit.direccion }}">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Foto de Perfil</h3>
+                    
+                    <div class="form-group">
+                        <label for="foto_perfil">Foto actual:</label>
+                        {% if usuario_edit.foto_perfil %}
+                            <div class="current-photo">
+                                <img src="{{ usuario_edit.foto_perfil.url }}" alt="Foto actual" class="profile-photo">
+                            </div>
+                        {% else %}
+                            <p class="no-photo">No hay foto de perfil</p>
+                        {% endif %}
+                        <input type="file" id="foto_perfil" name="foto_perfil" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Configuración de Cuenta</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" name="es_dueno" {% if usuario_edit.es_dueño %}checked{% endif %}>
+                                Es dueño de gimnasio
+                            </label>
+                        </div>
+
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" name="is_staff" {% if usuario_edit.is_staff %}checked{% endif %}>
+                                Es administrador
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" name="is_active" {% if usuario_edit.is_active %}checked{% endif %}>
+                                Cuenta activa
+                            </label>
+                        </div>
+
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" name="email_verificado" {% if usuario_edit.email_verificado %}checked{% endif %}>
+                                Email verificado
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="new_password">Nueva contraseña (dejar vacío para no cambiar):</label>
+                        <input type="password" id="new_password" name="new_password" minlength="8">
+                        <small>Mínimo 8 caracteres</small>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-icon">💾</span>
+                        Guardar Cambios
+                    </button>
+                    <a href="{% url 'admin_usuarios' %}" class="btn btn-secondary">
+                        <span class="btn-icon">❌</span>
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html> 

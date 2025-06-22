@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar Gimnasio - Panel de Administrador</title>
+    <link rel="stylesheet" href="{% static 'core/css/admin_panel.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Eliminar Gimnasio</h1>
+            <a href="{% url 'admin_gimnasios' %}" class="btn btn-secondary">
+                <span class="btn-icon">⬅️</span>
+                Volver a Gimnasios
+            </a>
+        </div>
+
+        <div class="admin-confirmation">
+            <div class="confirmation-card">
+                <div class="confirmation-header">
+                    <span class="warning-icon">⚠️</span>
+                    <h2>Confirmar Eliminación</h2>
+                </div>
+
+                <div class="gym-info">
+                    <div class="gym-image">
+                        {% if gimnasio.imagen %}
+                            <img src="{{ gimnasio.imagen.url }}" alt="Imagen de {{ gimnasio.nombre_gym }}">
+                        {% else %}
+                            <div class="image-placeholder">
+                                🏋️
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="gym-details">
+                        <h3>{{ gimnasio.nombre_gym }}</h3>
+                        <p><strong>ID:</strong> {{ gimnasio.codigo_gym }}</p>
+                        <p><strong>Ubicación:</strong> {{ gimnasio.ubicacion }}</p>
+                        <p><strong>Precio:</strong> ${{ gimnasio.precio_inscripcion }}</p>
+                        <p><strong>Calificación:</strong> {{ gimnasio.calificacion|floatformat:1 }}/5.0 ({{ gimnasio.cantidad_resenas }} reseñas)</p>
+                        <p><strong>Vistas:</strong> {{ gimnasio.vistas }}</p>
+                        
+                        <div class="owner-info">
+                            <h4>Dueño:</h4>
+                            <p><strong>Nombre:</strong> {{ gimnasio.dueño.nombre }}</p>
+                            <p><strong>Email:</strong> {{ gimnasio.dueño.email }}</p>
+                            <p><strong>Teléfono:</strong> {{ gimnasio.dueño.telefono|default:"No especificado" }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="warning-message">
+                    <p><strong>⚠️ Atención:</strong> Esta acción no se puede deshacer.</p>
+                    <p>Al eliminar este gimnasio, se eliminarán también:</p>
+                    <ul>
+                        <li>Toda la información del gimnasio</li>
+                        <li>Todas las reseñas y calificaciones</li>
+                        <li>Todas las máquinas registradas</li>
+                        <li>Todos los productos del inventario</li>
+                        <li>Todas las rutinas asociadas</li>
+                        <li>Todos los favoritos de los usuarios</li>
+                        <li>Todas las inscripciones de clientes</li>
+                    </ul>
+                    <p><strong>El dueño del gimnasio mantendrá su cuenta de usuario.</strong></p>
+                </div>
+
+                <form method="POST" class="confirmation-form">
+                    {% csrf_token %}
+                    <div class="confirmation-actions">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás completamente seguro de que quieres eliminar este gimnasio? Esta acción no se puede deshacer y eliminará todos los datos asociados.')">
+                            <span class="btn-icon">🗑️</span>
+                            Sí, Eliminar Gimnasio
+                        </button>
+                        <a href="{% url 'admin_gimnasios' %}" class="btn btn-secondary">
+                            <span class="btn-icon">❌</span>
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

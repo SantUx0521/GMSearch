@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Gimnasio - Panel de Administrador</title>
+    <link rel="stylesheet" href="{% static 'core/css/admin_panel.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Editar Gimnasio</h1>
+            <a href="{% url 'admin_gimnasios' %}" class="btn btn-secondary">
+                <span class="btn-icon">⬅️</span>
+                Volver a Gimnasios
+            </a>
+        </div>
+
+        <div class="admin-form-container">
+            <form method="POST" enctype="multipart/form-data" class="admin-form">
+                {% csrf_token %}
+                
+                <div class="form-section">
+                    <h3>Información del Gimnasio</h3>
+                    
+                    <div class="form-group">
+                        <label for="nombre_gym">Nombre del Gimnasio:</label>
+                        <input type="text" id="nombre_gym" name="nombre_gym" value="{{ gimnasio.nombre_gym }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ubicacion">Ubicación:</label>
+                        <input type="text" id="ubicacion" name="ubicacion" value="{{ gimnasio.ubicacion }}" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="precio_inscripcion">Precio de Inscripción:</label>
+                            <input type="number" id="precio_inscripcion" name="precio_inscripcion" value="{{ gimnasio.precio_inscripcion }}" step="0.01" min="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="calificacion">Calificación:</label>
+                            <input type="number" id="calificacion" name="calificacion" value="{{ gimnasio.calificacion }}" step="0.1" min="0" max="5">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cantidad_resenas">Cantidad de Reseñas:</label>
+                            <input type="number" id="cantidad_resenas" name="cantidad_resenas" value="{{ gimnasio.cantidad_resenas }}" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="vistas">Número de Vistas:</label>
+                            <input type="number" id="vistas" name="vistas" value="{{ gimnasio.vistas }}" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descripcion">Descripción:</label>
+                        <textarea id="descripcion" name="descripcion" rows="4" required>{{ gimnasio.descripcion }}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Imagen del Gimnasio</h3>
+                    
+                    <div class="form-group">
+                        <label for="imagen">Imagen actual:</label>
+                        {% if gimnasio.imagen %}
+                            <div class="current-image">
+                                <img src="{{ gimnasio.imagen.url }}" alt="Imagen actual del gimnasio" class="gym-image">
+                            </div>
+                        {% else %}
+                            <p class="no-image">No hay imagen disponible</p>
+                        {% endif %}
+                        <input type="file" id="imagen" name="imagen" accept="image/*">
+                        <small>Deja vacío para mantener la imagen actual</small>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Información del Dueño</h3>
+                    
+                    <div class="owner-info-display">
+                        <p><strong>Nombre:</strong> {{ gimnasio.dueño.nombre }}</p>
+                        <p><strong>Email:</strong> {{ gimnasio.dueño.email }}</p>
+                        <p><strong>Teléfono:</strong> {{ gimnasio.dueño.telefono|default:"No especificado" }}</p>
+                        <p><strong>Fecha de registro:</strong> {{ gimnasio.dueño.date_joined|date:"d/m/Y" }}</p>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-icon">💾</span>
+                        Guardar Cambios
+                    </button>
+                    <a href="{% url 'admin_gimnasios' %}" class="btn btn-secondary">
+                        <span class="btn-icon">❌</span>
+                        Cancelar
+                    </a>
+                    <a href="{% url 'gym_profile' gimnasio.codigo_gym %}" class="btn btn-info">
+                        <span class="btn-icon">👁️</span>
+                        Ver Perfil
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html> 

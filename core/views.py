@@ -22,7 +22,7 @@ from datetime import timedelta
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth import logout
-from django.db.models import Count, Avg
+from django.db.models import Count, Avg, Q
 from rest_framework.exceptions import PermissionDenied
 from .models import Gimnasio, Reseña, Usuario, Inventario, Maquina
 
@@ -185,7 +185,7 @@ class ReseñaViewSet(viewsets.ModelViewSet):
 
         # Actualizar la calificación del gimnasio
         reseñas = gimnasio.resenas.all()
-        promedio = reseñas.aggregate(models.Avg('estrellas'))['estrellas__avg']
+        promedio = reseñas.aggregate(Avg('estrellas'))['estrellas__avg']
         gimnasio.calificacion = round(promedio, 2)
         gimnasio.cantidad_resenas = reseñas.count()
         gimnasio.save()
@@ -205,7 +205,7 @@ class ReseñaViewSet(viewsets.ModelViewSet):
         # Actualizar la calificación del gimnasio
         gimnasio = reseña.gimnasio
         reseñas = gimnasio.resenas.all()
-        promedio = reseñas.aggregate(models.Avg('estrellas'))['estrellas__avg']
+        promedio = reseñas.aggregate(Avg('estrellas'))['estrellas__avg']
         gimnasio.calificacion = round(promedio, 2)
         gimnasio.cantidad_resenas = reseñas.count()
         gimnasio.save()
@@ -343,8 +343,12 @@ def profile(request):
     return render(request, 'core/profile.html', {'usuario': usuario})
 
 def smart_profile(request):
-    """Vista inteligente que detecta si el usuario es dueño de un gimnasio"""
+    """Vista inteligente que detecta si el usuario es dueño de un gimnasio o administrador"""
     usuario = request.user
+    
+    # Si es administrador, redirigir al panel de administrador
+    if usuario.is_staff:
+        return redirect('admin_panel')
     
     # Verificar si el usuario es dueño de algún gimnasio
     try:
@@ -839,7 +843,7 @@ def editar_resena(request, gimnasio_id, resena_id):
             
             # Actualizar manualmente la calificación del gimnasio
             reseñas = gimnasio.resenas.all()
-            promedio = reseñas.aggregate(models.Avg('estrellas'))['estrellas__avg']
+            promedio = reseñas.aggregate(Avg('estrellas'))['estrellas__avg']
             gimnasio.calificacion = round(promedio, 2)
             gimnasio.cantidad_resenas = reseñas.count()
             gimnasio.save()
@@ -868,7 +872,7 @@ def eliminar_resena(request, gimnasio_id, resena_id):
             # Actualizar la calificación del gimnasio
             reseñas = gimnasio.resenas.all()
             if reseñas.exists():
-                promedio = reseñas.aggregate(models.Avg('estrellas'))['estrellas__avg']
+                promedio = reseñas.aggregate(Avg('estrellas'))['estrellas__avg']
                 gimnasio.calificacion = round(promedio, 2)
             else:
                 gimnasio.calificacion = 0
@@ -881,5 +885,211 @@ def eliminar_resena(request, gimnasio_id, resena_id):
             return redirect('index')
     
     return redirect('gym_profile', gimnasio_id=gimnasio_id)
+
+# ----------------------------
+# Panel de Administrador
+# ----------------------------
+
+def admin_panel(request):
+    """Panel principal del administrador"""
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('login')
+    
+    # Obtener estadísticas generales
+    total_usuarios = Usuario.objects.count()
+    total_gimnasios = Gimnasio.objects.count()
+    usuarios_verificados = Usuario.objects.filter(email_verificado=True).count()
+    usuarios_pendientes = Usuario.objects.filter(email_verificado=False).count()
+    
+    context = {
+        'total_usuarios': total_usuarios,
+        'total_gimnasios': total_gimnasios,
+        'usuarios_verificados': usuarios_verificados,
+        'usuarios_pendientes': usuarios_pendientes,
+    }
+    
+    return render(request, 'core/admin_panel.html', context)
+
+def admin_usuarios(request):
+    """Lista de usuarios para administración"""
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('login')
+    
+    usuarios = Usuario.objects.all().order_by('-date_joined')
+    
+    # Filtros
+    filtro = request.GET.get('filtro', '')
+    if filtro == 'verificados':
+        usuarios = usuarios.filter(email_verificado=True)
+    elif filtro == 'pendientes':
+        usuarios = usuarios.filter(email_verificado=False)
+    elif filtro == 'duenos':
+        usuarios = usuarios.filter(es_dueño=True)
+    
+    # Búsqueda
+    busqueda = request.GET.get('busqueda', '')
+    if busqueda:
+        usuarios = usuarios.filter(
+            Q(nombre__icontains=busqueda) | 
+            Q(email__icontains=busqueda)
+        )
+    
+    context = {
+        'usuarios': usuarios,
+        'filtro': filtro,
+        'busqueda': busqueda,
+    }
+    
+    return render(request, 'core/admin_usuarios.html', context)
+
+def admin_editar_usuario(request, usuario_id):
+    """Editar usuario desde el panel de administrador"""
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('login')
+    
+    usuario = get_object_or_404(Usuario, id=usuario_id)
+    
+    if request.method == 'POST':
+        # Actualizar datos del usuario
+        usuario.nombre = request.POST.get('nombre', usuario.nombre)
+        usuario.email = request.POST.get('email', usuario.email)
+        usuario.edad = request.POST.get('edad') or None
+        usuario.telefono = request.POST.get('telefono', usuario.telefono)
+        usuario.direccion = request.POST.get('direccion', usuario.direccion)
+        usuario.sexo = request.POST.get('sexo', usuario.sexo)
+        usuario.es_dueño = request.POST.get('es_dueno') == 'on'
+        usuario.is_staff = request.POST.get('is_staff') == 'on'
+        usuario.is_active = request.POST.get('is_active') == 'on'
+        usuario.email_verificado = request.POST.get('email_verificado') == 'on'
+        
+        # Normalizar la estatura
+        estatura = request.POST.get('estatura')
+        usuario.estatura = normalizar_estatura(estatura)
+        
+        usuario.peso = request.POST.get('peso') or None
+        
+        # Manejar la foto de perfil
+        if 'foto_perfil' in request.FILES:
+            usuario.foto_perfil = request.FILES['foto_perfil']
+        
+        # Manejar cambio de contraseña
+        new_password = request.POST.get('new_password')
+        if new_password and len(new_password) >= 8:
+            usuario.set_password(new_password)
+        
+        usuario.save()
+        
+        return redirect('admin_usuarios')
+    
+    context = {
+        'usuario_edit': usuario,
+    }
+    
+    return render(request, 'core/admin_editar_usuario.html', context)
+
+def admin_eliminar_usuario(request, usuario_id):
+    """Eliminar usuario desde el panel de administrador"""
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('login')
+    
+    if request.method == 'POST':
+        usuario = get_object_or_404(Usuario, id=usuario_id)
+        
+        # No permitir eliminar al propio administrador
+        if usuario == request.user:
+            return redirect('admin_usuarios')
+        
+        usuario.delete()
+        return redirect('admin_usuarios')
+    
+    usuario = get_object_or_404(Usuario, id=usuario_id)
+    context = {
+        'usuario': usuario,
+    }
+    
+    return render(request, 'core/admin_eliminar_usuario.html', context)
+
+def admin_gimnasios(request):
+    """Lista de gimnasios para administración"""
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('login')
+    
+    gimnasios = Gimnasio.objects.all().order_by('-codigo_gym')
+    
+    # Filtros
+    filtro = request.GET.get('filtro', '')
+    if filtro == 'con_imagen':
+        gimnasios = gimnasios.exclude(imagen='')
+    elif filtro == 'sin_imagen':
+        gimnasios = gimnasios.filter(imagen='')
+    
+    # Búsqueda
+    busqueda = request.GET.get('busqueda', '')
+    if busqueda:
+        gimnasios = gimnasios.filter(
+            Q(nombre_gym__icontains=busqueda) | 
+            Q(ubicacion__icontains=busqueda) |
+            Q(dueño__nombre__icontains=busqueda)
+        )
+    
+    # Calcular promedio de calificación
+    promedio_calificacion = gimnasios.aggregate(prom=Avg('calificacion'))['prom'] or 0
+    
+    context = {
+        'gimnasios': gimnasios,
+        'filtro': filtro,
+        'busqueda': busqueda,
+        'promedio_calificacion': promedio_calificacion,
+    }
+    
+    return render(request, 'core/admin_gimnasios.html', context)
+
+def admin_editar_gimnasio(request, gimnasio_id):
+    """Editar gimnasio desde el panel de administrador"""
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('login')
+    
+    gimnasio = get_object_or_404(Gimnasio, codigo_gym=gimnasio_id)
+    
+    if request.method == 'POST':
+        # Actualizar datos del gimnasio
+        gimnasio.nombre_gym = request.POST.get('nombre_gym', gimnasio.nombre_gym)
+        gimnasio.ubicacion = request.POST.get('ubicacion', gimnasio.ubicacion)
+        gimnasio.precio_inscripcion = request.POST.get('precio_inscripcion', gimnasio.precio_inscripcion)
+        gimnasio.descripcion = request.POST.get('descripcion', gimnasio.descripcion)
+        gimnasio.calificacion = request.POST.get('calificacion', gimnasio.calificacion)
+        gimnasio.cantidad_resenas = request.POST.get('cantidad_resenas', gimnasio.cantidad_resenas)
+        gimnasio.vistas = request.POST.get('vistas', gimnasio.vistas)
+        
+        # Manejar imagen
+        if 'imagen' in request.FILES:
+            gimnasio.imagen = request.FILES['imagen']
+        
+        gimnasio.save()
+        
+        return redirect('admin_gimnasios')
+    
+    context = {
+        'gimnasio': gimnasio,
+    }
+    
+    return render(request, 'core/admin_editar_gimnasio.html', context)
+
+def admin_eliminar_gimnasio(request, gimnasio_id):
+    """Eliminar gimnasio desde el panel de administrador"""
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('login')
+    
+    if request.method == 'POST':
+        gimnasio = get_object_or_404(Gimnasio, codigo_gym=gimnasio_id)
+        gimnasio.delete()
+        return redirect('admin_gimnasios')
+    
+    gimnasio = get_object_or_404(Gimnasio, codigo_gym=gimnasio_id)
+    context = {
+        'gimnasio': gimnasio,
+    }
+    
+    return render(request, 'core/admin_eliminar_gimnasio.html', context)
 
 

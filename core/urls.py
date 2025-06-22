@@ -51,6 +51,15 @@ urlpatterns = [
     path('buscar/', views.buscar_gimnasios, name='buscar_gimnasios'),
     path('api/gimnasio/<int:gimnasio_id>/detalle/', views.gimnasio_detalle_api, name='gimnasio_detalle_api'),
 
+    # Panel de Administrador
+    path('admin-panel/', views.admin_panel, name='admin_panel'),
+    path('admin-panel/usuarios/', views.admin_usuarios, name='admin_usuarios'),
+    path('admin-panel/usuarios/<int:usuario_id>/editar/', views.admin_editar_usuario, name='admin_editar_usuario'),
+    path('admin-panel/usuarios/<int:usuario_id>/eliminar/', views.admin_eliminar_usuario, name='admin_eliminar_usuario'),
+    path('admin-panel/gimnasios/', views.admin_gimnasios, name='admin_gimnasios'),
+    path('admin-panel/gimnasios/<int:gimnasio_id>/editar/', views.admin_editar_gimnasio, name='admin_editar_gimnasio'),
+    path('admin-panel/gimnasios/<int:gimnasio_id>/eliminar/', views.admin_eliminar_gimnasio, name='admin_eliminar_gimnasio'),
+
     # Endpoints API
     path('api/', include(router.urls)),
     path('api/registro/', RegistroUsuarioView.as_view(), name='api_registro'),

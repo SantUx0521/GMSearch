@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administrador</title>
+    <link rel="stylesheet" href="{% static 'core/css/admin_panel.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Panel de Administrador</h1>
+            <p>Bienvenido, {{ user.nombre }}</p>
+        </div>
+
+        <div class="admin-stats">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-content">
+                    <h3>{{ total_usuarios }}</h3>
+                    <p>Total Usuarios</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🏋️</div>
+                <div class="stat-content">
+                    <h3>{{ total_gimnasios }}</h3>
+                    <p>Total Gimnasios</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-content">
+                    <h3>{{ usuarios_verificados }}</h3>
+                    <p>Usuarios Verificados</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-content">
+                    <h3>{{ usuarios_pendientes }}</h3>
+                    <p>Usuarios Pendientes</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-actions">
+            <div class="action-section">
+                <h2>Gestión de Usuarios</h2>
+                <div class="action-buttons">
+                    <a href="{% url 'admin_usuarios' %}" class="btn btn-primary">
+                        <span class="btn-icon">👥</span>
+                        Ver Todos los Usuarios
+                    </a>
+                    <a href="{% url 'admin_usuarios' %}?filtro=pendientes" class="btn btn-warning">
+                        <span class="btn-icon">⏳</span>
+                        Usuarios Pendientes
+                    </a>
+                    <a href="{% url 'admin_usuarios' %}?filtro=duenos" class="btn btn-info">
+                        <span class="btn-icon">👑</span>
+                        Dueños de Gimnasios
+                    </a>
+                </div>
+            </div>
+
+            <div class="action-section">
+                <h2>Gestión de Gimnasios</h2>
+                <div class="action-buttons">
+                    <a href="{% url 'admin_gimnasios' %}" class="btn btn-primary">
+                        <span class="btn-icon">🏋️</span>
+                        Ver Todos los Gimnasios
+                    </a>
+                    <a href="{% url 'admin_gimnasios' %}?filtro=con_imagen" class="btn btn-success">
+                        <span class="btn-icon">🖼️</span>
+                        Con Imágenes
+                    </a>
+                    <a href="{% url 'admin_gimnasios' %}?filtro=sin_imagen" class="btn btn-warning">
+                        <span class="btn-icon">📷</span>
+                        Sin Imágenes
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-footer">
+            <a href="{% url 'index' %}" class="btn btn-secondary">
+                <span class="btn-icon">🏠</span>
+                Volver al Inicio
+            </a>
+            <a href="{% url 'logout' %}" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que quieres cerrar sesión?')">
+                <span class="btn-icon">🚪</span>
+                Cerrar Sesión
+            </a>
+        </div>
+    </div>
+</body>
+</html> 

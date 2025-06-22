@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Gimnasios - Panel de Administrador</title>
+    <link rel="stylesheet" href="{% static 'core/css/admin_panel.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Gestión de Gimnasios</h1>
+            <a href="{% url 'admin_panel' %}" class="btn btn-secondary">
+                <span class="btn-icon">⬅️</span>
+                Volver al Panel
+            </a>
+        </div>
+
+        <!-- Filtros y Búsqueda -->
+        <div class="admin-filters">
+            <form method="GET" class="filter-form">
+                <div class="search-box">
+                    <input type="text" name="busqueda" value="{{ busqueda }}" placeholder="Buscar por nombre, ubicación o dueño...">
+                    <button type="submit" class="btn btn-primary">🔍</button>
+                </div>
+                
+                <div class="filter-options">
+                    <select name="filtro" onchange="this.form.submit()">
+                        <option value="">Todos los gimnasios</option>
+                        <option value="con_imagen" {% if filtro == 'con_imagen' %}selected{% endif %}>Con imágenes</option>
+                        <option value="sin_imagen" {% if filtro == 'sin_imagen' %}selected{% endif %}>Sin imágenes</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lista de Gimnasios -->
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Nombre</th>
+                        <th>Dueño</th>
+                        <th>Ubicación</th>
+                        <th>Precio</th>
+                        <th>Calificación</th>
+                        <th>Reseñas</th>
+                        <th>Vistas</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gimnasio in gimnasios %}
+                    <tr>
+                        <td>
+                            {% if gimnasio.imagen %}
+                                <img src="{{ gimnasio.imagen.url }}" alt="Imagen de {{ gimnasio.nombre_gym }}" class="gym-thumbnail">
+                            {% else %}
+                                <div class="gym-thumbnail-placeholder">
+                                    🏋️
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ gimnasio.nombre_gym }}</strong>
+                            <br>
+                            <small>ID: {{ gimnasio.codigo_gym }}</small>
+                        </td>
+                        <td>
+                            <div class="owner-info">
+                                <span class="owner-name">{{ gimnasio.dueño.nombre }}</span>
+                                <br>
+                                <small>{{ gimnasio.dueño.email }}</small>
+                            </div>
+                        </td>
+                        <td>{{ gimnasio.ubicacion }}</td>
+                        <td>${{ gimnasio.precio_inscripcion }}</td>
+                        <td>
+                            <div class="rating-display">
+                                <span class="stars">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= gimnasio.calificacion %}
+                                            ⭐
+                                        {% else %}
+                                            ☆
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
+                                <br>
+                                <small>{{ gimnasio.calificacion|floatformat:1 }}/5.0</small>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="review-count">{{ gimnasio.cantidad_resenas }}</span>
+                        </td>
+                        <td>
+                            <span class="view-count">{{ gimnasio.vistas }}</span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{% url 'gym_profile' gimnasio.codigo_gym %}" class="btn btn-sm btn-info" title="Ver perfil">
+                                    👁️
+                                </a>
+                                <a href="{% url 'admin_editar_gimnasio' gimnasio.codigo_gym %}" class="btn btn-sm btn-primary" title="Editar">
+                                    ✏️
+                                </a>
+                                <a href="{% url 'admin_eliminar_gimnasio' gimnasio.codigo_gym %}" class="btn btn-sm btn-danger" title="Eliminar">
+                                    🗑️
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="no-data">
+                            <p>No se encontraron gimnasios con los filtros aplicados.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="admin-stats-summary">
+            <div class="stat-item">
+                <span class="stat-label">Total mostrados:</span>
+                <span class="stat-value">{{ gimnasios.count }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Promedio calificación:</span>
+                <span class="stat-value">
+                    {{ promedio_calificacion|floatformat:1 }}/5.0
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
