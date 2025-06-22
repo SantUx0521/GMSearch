@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from core.models import Usuario
+from django.contrib.auth import authenticate
 import os
 
 class Command(BaseCommand):
@@ -21,6 +22,28 @@ class Command(BaseCommand):
             self.stdout.write(
                 self.style.WARNING(f'⚠️ El usuario con email {email} ya existe.')
             )
+            
+            # Verificar que el usuario existente puede autenticarse
+            user = authenticate(username=email, password=password)
+            if user:
+                self.stdout.write(
+                    self.style.SUCCESS(f'✅ Usuario existente puede autenticarse correctamente')
+                )
+            else:
+                self.stdout.write(
+                    self.style.ERROR(f'❌ Usuario existente pero no puede autenticarse. Actualizando contraseña...')
+                )
+                # Actualizar la contraseña del usuario existente
+                user = Usuario.objects.get(email=email)
+                user.set_password(password)
+                user.is_staff = True
+                user.is_superuser = True
+                user.is_active = True
+                user.email_verificado = True
+                user.save()
+                self.stdout.write(
+                    self.style.SUCCESS(f'✅ Contraseña actualizada y permisos configurados')
+                )
             return
 
         # Crear el usuario administrador
@@ -40,15 +63,24 @@ class Command(BaseCommand):
             admin_user.email_verificado = True
             admin_user.save()
 
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f'✅ Administrador creado exitosamente:\n'
-                    f'   Email: {email}\n'
-                    f'   Nombre: {nombre}\n'
-                    f'   Contraseña: {password}\n'
-                    f'   ID: {admin_user.id}'
+            self.stdout.write('🔍 Verificando que el usuario se puede autenticar...')
+            # Verificar que el usuario se puede autenticar
+            auth_user = authenticate(username=email, password=password)
+            if auth_user:
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f'✅ Administrador creado y verificado exitosamente:\n'
+                        f'   Email: {email}\n'
+                        f'   Nombre: {nombre}\n'
+                        f'   Contraseña: {password}\n'
+                        f'   ID: {admin_user.id}\n'
+                        f'   Autenticación: ✅ Funciona'
+                    )
                 )
-            )
+            else:
+                self.stdout.write(
+                    self.style.ERROR(f'❌ Usuario creado pero no puede autenticarse')
+                )
             
         except Exception as e:
             self.stdout.write(
