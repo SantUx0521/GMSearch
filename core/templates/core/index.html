@@ -36,10 +36,22 @@
                     <button class="account-btn" id="accountBtn">
                         <span class="account-text">Account</span>
                         <div class="account-avatar">
-                            {% if user.foto_perfil %}
-                                <img src="{{ user.foto_perfil.url }}" alt="Foto de perfil">
+                            {% if user.es_dueño %}
+                                {% for gimnasio in user.gimnasios.all %}
+                                    {% if gimnasio.imagen %}
+                                        <img src="{{ gimnasio.imagen.url }}" alt="Imagen del gimnasio">
+                                    {% else %}
+                                        <i class="fas fa-dumbbell"></i>
+                                    {% endif %}
+                                {% empty %}
+                                    <i class="fas fa-user"></i>
+                                {% endfor %}
                             {% else %}
-                                <i class="fas fa-user"></i>
+                                {% if user.foto_perfil %}
+                                    <img src="{{ user.foto_perfil.url }}" alt="Foto de perfil">
+                                {% else %}
+                                    <i class="fas fa-user"></i>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </button>
