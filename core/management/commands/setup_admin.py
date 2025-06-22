@@ -3,40 +3,36 @@ from core.models import Usuario
 import os
 
 class Command(BaseCommand):
-    help = 'Crea un usuario administrador'
-
-    def add_arguments(self, parser):
-        parser.add_argument('--email', type=str, required=True, help='Email del administrador')
-        parser.add_argument('--nombre', type=str, required=True, help='Nombre del administrador')
-        parser.add_argument('--password', type=str, required=True, help='Contraseña del administrador')
+    help = 'Crea un usuario administrador usando variables de entorno'
 
     def handle(self, *args, **options):
-        email = options['email']
-        nombre = options['nombre']
-        password = options['password']
+        # Obtener valores de las variables de entorno
+        email = os.environ.get('ADMIN_EMAIL', 'admin@admin.com')
+        nombre = os.environ.get('ADMIN_NAME', 'Administrador')
+        password = os.environ.get('ADMIN_PASSWORD', 'Admin0312')
 
-        self.stdout.write(f'Iniciando creación de administrador...')
-        self.stdout.write(f'Email: {email}')
-        self.stdout.write(f'Nombre: {nombre}')
-        self.stdout.write(f'Password: {"*" * len(password)}')
+        self.stdout.write(f'🔧 Configurando administrador desde variables de entorno...')
+        self.stdout.write(f'   Email: {email}')
+        self.stdout.write(f'   Nombre: {nombre}')
+        self.stdout.write(f'   Password: {"*" * len(password)}')
 
         # Verificar si el usuario ya existe
         if Usuario.objects.filter(email=email).exists():
             self.stdout.write(
-                self.style.WARNING(f'El usuario con email {email} ya existe.')
+                self.style.WARNING(f'⚠️ El usuario con email {email} ya existe.')
             )
             return
 
         # Crear el usuario administrador
         try:
-            self.stdout.write('Creando usuario...')
+            self.stdout.write('📝 Creando usuario...')
             admin_user = Usuario.objects.create_user(
                 email=email,
                 nombre=nombre,
                 password=password
             )
             
-            self.stdout.write('Configurando permisos de administrador...')
+            self.stdout.write('🔐 Configurando permisos de administrador...')
             # Configurar como administrador
             admin_user.is_staff = True
             admin_user.is_superuser = True
