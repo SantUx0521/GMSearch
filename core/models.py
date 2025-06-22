@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-
+from django.db.models import Avg
 
 class UsuarioManager(BaseUserManager):
     def create_user(self, email, nombre, password=None, **extra_fields):
@@ -59,6 +59,7 @@ class Gimnasio(models.Model):
     nombre_gym = models.CharField(max_length=100)
     ubicacion = models.CharField(max_length=255)
     calificacion = models.FloatField(default=0)
+    cantidad_resenas = models.IntegerField(default=0) 
     precio_inscripcion = models.DecimalField(max_digits=8, decimal_places=2)
     descripcion = models.TextField()
     vistas = models.IntegerField(default=0)
@@ -119,8 +120,15 @@ class Inventario(models.Model):
 class Reseña(models.Model):
     gimnasio = models.ForeignKey(Gimnasio, on_delete=models.CASCADE, related_name='resenas')
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    estrellas = models.IntegerField(choices=[(i, str(i)) for i in range(6)])  
+    estrellas = models.IntegerField(choices=[(i, str(i)) for i in range(6)])
     fecha = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.usuario.nombre} - {self.estrellas}⭐"
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # Guarda la nueva reseña en la base de datos
+        
+        gimnasio = self.gimnasio  # Obtiene el gimnasio relacionado
+        promedio = gimnasio.resenas.aggregate(Avg('estrellas'))['estrellas__avg'] or 0
+        gimnasio.calificacion = promedio  # Actualiza la calificación promedio
+        gimnasio.cantidad_resenas = gimnasio.resenas.count()  # Actualiza el conteo
+        gimnasio.save()  # Guarda los cambios en el gimnasio
+
