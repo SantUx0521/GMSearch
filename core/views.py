@@ -183,6 +183,27 @@ class ReseñaViewSet(viewsets.ModelViewSet):
         reseña = serializer.save(usuario=self.request.user)
         gimnasio = reseña.gimnasio
 
+        # Actualizar la calificación del gimnasio
+        reseñas = gimnasio.resenas.all()
+        promedio = reseñas.aggregate(models.Avg('estrellas'))['estrellas__avg']
+        gimnasio.calificacion = round(promedio, 2)
+        gimnasio.cantidad_resenas = reseñas.count()
+        gimnasio.save()
+
+    def perform_update(self, serializer):
+        if not self.request.user.is_authenticated:
+            raise PermissionDenied("Debes iniciar sesión para editar una reseña.")
+        
+        # Verificar que el usuario sea el autor de la reseña
+        reseña = serializer.instance
+        if reseña.usuario != self.request.user:
+            raise PermissionDenied("Solo puedes editar tus propias reseñas.")
+        
+        # Guardar la reseña actualizada (el modelo automáticamente marcará como editado)
+        reseña = serializer.save()
+        
+        # Actualizar la calificación del gimnasio
+        gimnasio = reseña.gimnasio
         reseñas = gimnasio.resenas.all()
         promedio = reseñas.aggregate(models.Avg('estrellas'))['estrellas__avg']
         gimnasio.calificacion = round(promedio, 2)
@@ -635,10 +656,13 @@ def gimnasio_detalle_api(request, gimnasio_id):
         reseñas_data = []
         for reseña in reseñas:
             reseñas_data.append({
+                'id': reseña.pk,
                 'usuario_nombre': reseña.usuario.nombre,
                 'estrellas': reseña.estrellas,
                 'texto': reseña.texto,
-                'fecha': reseña.fecha.isoformat()
+                'fecha': reseña.fecha.isoformat(),
+                'editado': reseña.editado,
+                'es_mi_resena': request.user.is_authenticated and reseña.usuario == request.user
             })
     except Gimnasio.DoesNotExist:
         raise Http404("Gimnasio no encontrado")
@@ -799,5 +823,63 @@ def eliminar_cuenta_usuario(request):
             return redirect('profile')
     
     return redirect('profile')
+
+def editar_resena(request, gimnasio_id, resena_id):
+    """Vista para editar una reseña"""
+    try:
+        gimnasio = Gimnasio.objects.get(codigo_gym=gimnasio_id)
+        reseña = Reseña.objects.get(pk=resena_id, gimnasio=gimnasio, usuario=request.user)
+        
+        if request.method == 'POST':
+            # Actualizar la reseña
+            reseña.estrellas = int(request.POST.get('estrellas', reseña.estrellas))
+            reseña.texto = request.POST.get('texto', reseña.texto)
+            
+            reseña.save()  # El modelo automáticamente marcará como editado
+            
+            # Actualizar manualmente la calificación del gimnasio
+            reseñas = gimnasio.resenas.all()
+            promedio = reseñas.aggregate(models.Avg('estrellas'))['estrellas__avg']
+            gimnasio.calificacion = round(promedio, 2)
+            gimnasio.cantidad_resenas = reseñas.count()
+            gimnasio.save()
+            
+            # Redirigir a la página de búsqueda (donde estaban anteriormente)
+            return redirect('search')
+        
+        context = {
+            'gimnasio': gimnasio,
+            'reseña': reseña,
+        }
+        return render(request, 'core/editar_resena.html', context)
+    except (Gimnasio.DoesNotExist, Reseña.DoesNotExist):
+        return redirect('index')
+
+def eliminar_resena(request, gimnasio_id, resena_id):
+    """Vista para eliminar una reseña"""
+    if request.method == 'POST':
+        try:
+            gimnasio = Gimnasio.objects.get(codigo_gym=gimnasio_id)
+            reseña = Reseña.objects.get(pk=resena_id, gimnasio=gimnasio, usuario=request.user)
+            
+            # Eliminar la reseña
+            reseña.delete()
+            
+            # Actualizar la calificación del gimnasio
+            reseñas = gimnasio.resenas.all()
+            if reseñas.exists():
+                promedio = reseñas.aggregate(models.Avg('estrellas'))['estrellas__avg']
+                gimnasio.calificacion = round(promedio, 2)
+            else:
+                gimnasio.calificacion = 0
+            gimnasio.cantidad_resenas = reseñas.count()
+            gimnasio.save()
+            
+            # Redirigir a la página de búsqueda (donde estaban anteriormente)
+            return redirect('search')
+        except (Gimnasio.DoesNotExist, Reseña.DoesNotExist):
+            return redirect('index')
+    
+    return redirect('gym_profile', gimnasio_id=gimnasio_id)
 
 

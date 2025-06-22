@@ -92,3 +92,37 @@ class ReseñaSerializer(serializers.ModelSerializer):
         model = Reseña
         fields = '__all__'
         read_only_fields = ['usuario']  # <- esto es lo importante
+
+    def validate(self, data):
+        # Verificar que no exista ya una reseña del mismo usuario para el mismo gimnasio
+        usuario = self.context['request'].user
+        gimnasio = data.get('gimnasio')
+        
+        # Si es una actualización, excluir la reseña actual
+        if self.instance:
+            existing_resena = Reseña.objects.filter(
+                usuario=usuario, 
+                gimnasio=gimnasio
+            ).exclude(pk=self.instance.pk).first()
+        else:
+            existing_resena = Reseña.objects.filter(
+                usuario=usuario, 
+                gimnasio=gimnasio
+            ).first()
+        
+        if existing_resena:
+            raise serializers.ValidationError(
+                "Ya has dejado una reseña para este gimnasio. Solo puedes dejar una reseña por gimnasio."
+            )
+        
+        return data
+
+    def validate_estrellas(self, value):
+        if value < 1 or value > 5:
+            raise serializers.ValidationError("La calificación debe estar entre 1 y 5 estrellas.")
+        return value
+
+    def validate_texto(self, value):
+        if value and len(value) > 500:
+            raise serializers.ValidationError("El comentario no puede exceder los 500 caracteres.")
+        return value

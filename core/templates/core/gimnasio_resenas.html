@@ -194,6 +194,9 @@
                         <div class="usuario-info">
                             <span class="usuario-nombre">{{ reseña.usuario.nombre }}</span>
                             <span class="fecha-resena">{{ reseña.fecha|date:"d/m/Y H:i" }}</span>
+                            {% if reseña.editado %}
+                                <span class="editado-indicator">(editado)</span>
+                            {% endif %}
                         </div>
                         <div class="estrellas-resena">
                             {% for i in "12345" %}

@@ -46,6 +46,8 @@ urlpatterns = [
     path('edit-producto/<int:gimnasio_id>/<int:producto_id>/', views.edit_producto, name='edit_producto'),
     path('delete-gym-account/<int:gimnasio_id>/', views.delete_gym_account, name='delete_gym_account'),
     path('gimnasio-resenas/<int:gimnasio_id>/', views.gimnasio_resenas, name='gimnasio_resenas'),
+    path('editar-resena/<int:gimnasio_id>/<int:resena_id>/', views.editar_resena, name='editar_resena'),
+    path('eliminar-resena/<int:gimnasio_id>/<int:resena_id>/', views.eliminar_resena, name='eliminar_resena'),
     path('buscar/', views.buscar_gimnasios, name='buscar_gimnasios'),
     path('api/gimnasio/<int:gimnasio_id>/detalle/', views.gimnasio_detalle_api, name='gimnasio_detalle_api'),
 

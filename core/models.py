@@ -136,11 +136,6 @@ class Reseña(models.Model):
             from django.utils import timezone
             self.fecha_edicion = timezone.now()
         
-        super().save(*args, **kwargs)  # Guarda la nueva reseña en la base de datos
-        
-        gimnasio = self.gimnasio  # Obtiene el gimnasio relacionado
-        promedio = gimnasio.resenas.aggregate(Avg('estrellas'))['estrellas__avg'] or 0
-        gimnasio.calificacion = promedio  # Actualiza la calificación promedio
-        gimnasio.cantidad_resenas = gimnasio.resenas.count()  # Actualiza el conteo
-        gimnasio.save()  # Guarda los cambios en el gimnasio
+        # Guardar la reseña
+        super().save(*args, **kwargs)
 

@@ -1,0 +1,232 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Reseña - {{ gimnasio.nombre_gym }}</title>
+    <link rel="stylesheet" href="{% static 'core/css/register.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+            margin: 20px auto;
+        }
+        
+        .form-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+        
+        .stars-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .star {
+            font-size: 30px;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .star.active {
+            color: #ffd700;
+        }
+        
+        .star:hover,
+        .star:hover ~ .star {
+            color: #ffd700;
+        }
+        
+        .text-area {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+        
+        .text-area:focus {
+            outline: none;
+            border-color: indigo;
+        }
+        
+        .char-count {
+            text-align: right;
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: indigo;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: purple;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        .gym-info {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .gym-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: indigo;
+            margin-bottom: 5px;
+        }
+        
+        .gym-location {
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="center">
+            <div class="form-container">
+                <div class="gym-info">
+                    <div class="gym-name">{{ gimnasio.nombre_gym }}</div>
+                    <div class="gym-location">{{ gimnasio.ubicacion }}</div>
+                </div>
+                
+                <h2 class="form-title">Editar Reseña</h2>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="estrellas">Calificación:</label>
+                        <div class="stars-container">
+                            {% for i in "12345" %}
+                                <i class="star fas fa-star {% if forloop.counter <= reseña.estrellas %}active{% endif %}" 
+                                   data-value="{{ forloop.counter }}"></i>
+                            {% endfor %}
+                        </div>
+                        <input type="hidden" name="estrellas" id="estrellas" value="{{ reseña.estrellas }}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="texto">Comentario (opcional):</label>
+                        <textarea name="texto" id="texto" class="text-area" 
+                                  placeholder="Comparte tu experiencia con este gimnasio..." 
+                                  maxlength="500">{{ reseña.texto|default:'' }}</textarea>
+                        <div class="char-count">
+                            <span id="char-count">0</span>/500 caracteres
+                        </div>
+                    </div>
+                    
+                    <div class="btn-container">
+                        <a href="{% url 'search' %}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Funcionalidad de estrellas
+        const stars = document.querySelectorAll('.star');
+        const estrellasInput = document.getElementById('estrellas');
+        
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                estrellasInput.value = value;
+                
+                // Actualizar visualización de estrellas
+                stars.forEach((s, index) => {
+                    if (index < value) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+            });
+        });
+        
+        // Contador de caracteres
+        const textArea = document.getElementById('texto');
+        const charCount = document.getElementById('char-count');
+        
+        function updateCharCount() {
+            const length = textArea.value.length;
+            charCount.textContent = length;
+            
+            if (length > 450) {
+                charCount.style.color = '#dc3545';
+            } else if (length > 400) {
+                charCount.style.color = '#ffc107';
+            } else {
+                charCount.style.color = '#666';
+            }
+        }
+        
+        textArea.addEventListener('input', updateCharCount);
+        updateCharCount(); // Inicializar contador
+    </script>
+</body>
+</html> 
