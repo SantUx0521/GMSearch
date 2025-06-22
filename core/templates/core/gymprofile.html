@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil del Gimnasio - {{ gimnasio.nombre_gym }}</title>
+    <link rel="stylesheet" href="{% static 'core/css/gymprofile.css' %}">
+</head>
+<body>
+    <div class="main">
+        <div class="center">
+            <div class="header">
+                <h1>Perfil del Gimnasio</h1>
+                <h2>{{ gimnasio.nombre_gym }}</h2>
+                <div class="navigation-buttons">
+                    <a href="{% url 'index' %}" class="btn-volver">← Volver al inicio</a>
+                    <a href="{% url 'post_register_gym' gimnasio.codigo_gym %}" class="btn-agregar">+ Agregar producto</a>
+                </div>
+            </div>
+
+            <div class="gym-info">
+                <div class="gym-image">
+                    {% if gimnasio.imagen %}
+                        <img src="{{ gimnasio.imagen.url }}" alt="{{ gimnasio.nombre_gym }}">
+                    {% else %}
+                        <div class="no-image">Sin imagen</div>
+                    {% endif %}
+                </div>
+
+                <div class="gym-details">
+                    <div class="detail-item">
+                        <strong>Ubicación:</strong> {{ gimnasio.ubicacion }}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Precio de inscripción:</strong> ${{ gimnasio.precio_inscripcion }}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Contacto:</strong> {{ gimnasio.dueño.telefono|default:"No disponible" }}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Descripción:</strong> {{ gimnasio.descripcion }}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Calificación:</strong> 
+                        <span class="rating">
+                            {% if gimnasio.calificacion %}
+                                {{ gimnasio.calificacion|floatformat:1 }} ⭐
+                            {% else %}
+                                Sin calificaciones
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sections">
+                <div class="section">
+                    <h3>Máquinas ({{ maquinas.count }})</h3>
+                    {% if maquinas %}
+                        <div class="items-grid">
+                            {% for maquina in maquinas %}
+                                <div class="item-card">
+                                    <h4>{{ maquina.nombre }}</h4>
+                                    <p>{{ maquina.descripcion }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="no-items">No hay máquinas registradas</p>
+                    {% endif %}
+                </div>
+
+                <div class="section">
+                    <h3>Productos ({{ productos.count }})</h3>
+                    {% if productos %}
+                        <div class="items-grid">
+                            {% for producto in productos %}
+                                <div class="item-card">
+                                    <h4>{{ producto.nombre_prod }}</h4>
+                                    <p class="price">${{ producto.precio }}</p>
+                                    {% if producto.descripcion %}
+                                        <p>{{ producto.descripcion }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="no-items">No hay productos registrados</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="actions">
+                <a href="{% url 'post_register_gym' gimnasio.codigo_gym %}" class="btn-primary">Agregar más productos</a>
+                <a href="{% url 'index' %}" class="btn-secondary">Ir al inicio</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

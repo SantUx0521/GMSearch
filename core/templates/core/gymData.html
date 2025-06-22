@@ -45,13 +45,15 @@
                 <span></span>
             </div>
 
-            <input type="submit" value="Guardar detalles">
-        </form>
+            <!-- Botones de navegación entre campos y botón de guardar -->
+            <div class="navigation-buttons">
+                <a href="{% url 'index' %}" class="btn-volver">← Volver al inicio</a>
+                <a href="{% url 'post_register_gym' gimnasio.codigo_gym %}" class="btn-agregar">+ Agregar otro producto</a>
+            </div>
 
-        <div class="iniciar">
-            <a href="{% url 'index' %}" style="color: indigo; font-weight: bold;">← Volver al inicio</a>
-        </div>
+            <!-- Botón de guardar abajo -->
+            <input type="submit" value="Guardar cambios y ver perfil">
+        </form>
     </div>
 </body>
-</html>
 </html>

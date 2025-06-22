@@ -1,4 +1,3 @@
-
 from itertools import count
 import json
 from django.http import Http404, JsonResponse
@@ -317,6 +316,19 @@ def profile(request):
     usuario = request.user  # necesario para acceder directamente al usuario
     return render(request, 'core/profile.html', {'usuario': usuario})
 
+def smart_profile(request):
+    """Vista inteligente que detecta si el usuario es dueño de un gimnasio"""
+    usuario = request.user
+    
+    # Verificar si el usuario es dueño de algún gimnasio
+    try:
+        gimnasio = Gimnasio.objects.get(dueño=usuario)
+        # Si es dueño de un gimnasio, redirigir al perfil del gimnasio
+        return redirect('gym_profile', gimnasio_id=gimnasio.codigo_gym)
+    except Gimnasio.DoesNotExist:
+        # Si no es dueño de ningún gimnasio, mostrar el perfil normal del usuario
+        return redirect('profile')
+
 def edit_profile(request):
     usuario = request.user
     
@@ -458,8 +470,27 @@ def post_register_gym(request, gimnasio_id):
                 nombre_prod=inventario,
                 precio=precio, 
             )
+        
+        # Redirigir al perfil del gimnasio después de guardar
+        return redirect('gym_profile', gimnasio_id=gimnasio_id)
 
     return render(request, 'core/gymData.html', {'gimnasio': gimnasio})
+
+def gym_profile(request, gimnasio_id):
+    """Vista para mostrar el perfil del gimnasio"""
+    try:
+        gimnasio = Gimnasio.objects.get(pk=gimnasio_id)
+        maquinas = gimnasio.maquinas.all()
+        productos = gimnasio.productos.all()
+        
+        context = {
+            'gimnasio': gimnasio,
+            'maquinas': maquinas,
+            'productos': productos,
+        }
+        return render(request, 'core/gymprofile.html', context)
+    except Gimnasio.DoesNotExist:
+        return redirect('index')
 
 def gimnasio_detalle_api(request, gimnasio_id):
     try:

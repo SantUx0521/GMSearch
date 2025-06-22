@@ -26,6 +26,7 @@ urlpatterns = [
     path('register-own/', views.register_page, name='register_own'),
     path('register/', views.post_reg, name='post_reg'), #formulario que solicita datos adicionales al usuario
     path('profile', views.profile, name= "profile"),
+    path('smart-profile/', views.smart_profile, name='smart_profile'),
     path('edit-profile/', views.edit_profile, name='edit_profile'),
     path('login-usuario/', views.login_usuario, name='login_usuario'),
     path('verificar-email/<str:token>/', views.verificar_email, name='verificar_email'),
@@ -33,6 +34,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('register-gym/', views.register_gym, name='reg_gym'),
     path('Details_gym/<int:gimnasio_id>/', views.post_register_gym, name='post_register_gym'),
+    path('gym-profile/<int:gimnasio_id>/', views.gym_profile, name='gym_profile'),
     path('buscar/', views.buscar_gimnasios, name='buscar_gimnasios'),
     path('api/gimnasio/<int:gimnasio_id>/detalle/', views.gimnasio_detalle_api, name='gimnasio_detalle_api'),
 

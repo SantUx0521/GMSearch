@@ -8,32 +8,47 @@ body{
     background-position: center center;
     background-size: cover; 
     position: relative;
-    overflow: hidden;
-    height: 100vh;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.main {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 900px;
+    width: 100%;
+    max-width: 900px;
     background: whitesmoke;
-    border-radius: 50px;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
 }
+
 .center h1{
     text-align: center;
-    padding: 0 0 20px 0;
+    padding: 20px 20px 10px 20px;
     border-bottom: 1px solid silver;
+    margin: 0;
+    font-size: 1.8rem;
 }
+
 .center h2{
     text-align: center;
-    padding: 0 0 20px 0;
+    padding: 10px 20px 20px 20px;
     font-size: 1em;
     border-bottom: 1px solid silver;
+    margin: 0;
+    line-height: 1.4;
 }
+
 .center form{
-    padding: 0 50px;
+    padding: 20px 30px 30px 30px;
     box-sizing: border-box;
 }
 
@@ -51,6 +66,7 @@ form .User{
     border: none;
     background: none;
     outline: none;
+    box-sizing: border-box;
 }
 
 .User input::placeholder {
@@ -106,11 +122,15 @@ input[type="submit"]{
     color: whitesmoke;
     cursor: pointer;
     outline: none;
+    margin-top: 20px;
+    transition: all 0.3s ease;
 }
 
 input[type="submit"]:hover{
     border-color: purple;
-    transition: .5s;
+    background: purple;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .iniciar{
@@ -119,6 +139,7 @@ input[type="submit"]:hover{
     font-size: 16px;
     color: black;
 }
+
 .User.textarea-wrapper {
   position: relative;
   margin: 30px 0;
@@ -131,9 +152,11 @@ input[type="submit"]:hover{
   font-size: 16px;
   border: none;
   background: none;
-  resize: none;
-  height: 100px;
+  resize: vertical;
+  min-height: 100px;
+  max-height: 200px;
   outline: none;
+  box-sizing: border-box;
 }
 
 .User.textarea-wrapper label {
@@ -168,44 +191,122 @@ input[type="submit"]:hover{
   width: 100%;
 }
 
-.User.file-upload {
+.User.file-input {
+  margin: 30px 0;
   text-align: center;
-  margin-top: 200px;
 }
 
 .textpic {
   font-weight: bold;
-  margin-bottom: 0.3em;
+  margin-bottom: 10px;
   color: #adadad;
+  display: block;
 }
 
-@media screen and (max-width: 750px) {
-  .main .center .search {
-    width: 500px;
+.User.file-input input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  border: 2px dashed #adadad;
+  border-radius: 10px;
+  background: #f9f9f9;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.User.file-input input[type="file"]:hover {
+  border-color: indigo;
+  background: #f0f0f0;
+}
+
+/* Media queries para responsividad */
+@media screen and (max-width: 768px) {
+  .main {
+    padding: 10px;
+  }
+  
+  .center {
+    border-radius: 15px;
+  }
+  
+  .center h1 {
+    font-size: 1.5rem;
+    padding: 15px 15px 10px 15px;
+  }
+  
+  .center h2 {
+    font-size: 0.9em;
+    padding: 10px 15px 15px 15px;
+  }
+  
+  .center form {
+    padding: 15px 20px 25px 20px;
+  }
+  
+  form .User {
+    margin: 25px 0;
+  }
+  
+  .User input {
+    font-size: 16px; /* Previene zoom en iOS */
+  }
+  
+  .User.textarea-wrapper textarea {
+    font-size: 16px; /* Previene zoom en iOS */
   }
 }
 
-@media screen and (max-width: 580px) {
-  .top .fa-bars {
-    display: block; 
+@media screen and (max-width: 480px) {
+  .main {
+    padding: 5px;
   }
-
-  .nav .links {
-    display: none;
+  
+  .center {
+    border-radius: 10px;
   }
-
-  .main .center .search {
-    width: 350px;
+  
+  .center h1 {
+    font-size: 1.3rem;
+    padding: 12px 12px 8px 12px;
+  }
+  
+  .center h2 {
+    font-size: 0.85em;
+    padding: 8px 12px 12px 12px;
+  }
+  
+  .center form {
+    padding: 12px 15px 20px 15px;
+  }
+  
+  form .User {
+    margin: 20px 0;
+  }
+  
+  input[type="submit"] {
+    height: 45px;
+    font-size: 16px;
+  }
+  
+  .User.textarea-wrapper textarea {
+    min-height: 80px;
   }
 }
 
-@media screen and (max-width: 420px) {
-  .main .center .h1 {
-    font-size: 80px;
+@media screen and (max-width: 360px) {
+  .center h1 {
+    font-size: 1.2rem;
   }
-
-  .main .center .search {
-    width: 250px;
+  
+  .center h2 {
+    font-size: 0.8em;
+  }
+  
+  .center form {
+    padding: 10px 12px 15px 12px;
+  }
+  
+  form .User {
+    margin: 15px 0;
   }
 }
 

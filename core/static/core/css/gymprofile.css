@@ -1,0 +1,357 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(img/fondo2.jpg);
+    color: black;
+    font-size: 1.2rem;
+    background-position: center center;
+    background-size: cover;
+    position: relative;
+    overflow-x: hidden;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.main {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.center {
+    width: 100%;
+    max-width: 1000px;
+    background: whitesmoke;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.header {
+    padding: 20px 30px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.header h1 {
+    text-align: center;
+    margin: 0 0 10px 0;
+    font-size: 2rem;
+    color: indigo;
+}
+
+.header h2 {
+    text-align: center;
+    margin: 0 0 20px 0;
+    font-size: 1.3rem;
+    color: #666;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.btn-volver, .btn-agregar {
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: 2px solid;
+    display: inline-block;
+    text-align: center;
+    min-width: 150px;
+}
+
+.btn-volver {
+    background: transparent;
+    color: indigo;
+    border-color: indigo;
+}
+
+.btn-volver:hover {
+    background: indigo;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-agregar {
+    background: indigo;
+    color: white;
+    border-color: indigo;
+}
+
+.btn-agregar:hover {
+    background: purple;
+    border-color: purple;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.gym-info {
+    display: flex;
+    padding: 30px;
+    gap: 30px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.gym-image {
+    flex: 0 0 200px;
+}
+
+.gym-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.no-image {
+    width: 100%;
+    height: 200px;
+    background: #f0f0f0;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-style: italic;
+}
+
+.gym-details {
+    flex: 1;
+}
+
+.detail-item {
+    margin-bottom: 15px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-item strong {
+    color: indigo;
+    display: inline-block;
+    min-width: 150px;
+}
+
+.rating {
+    color: #ff6b35;
+    font-weight: bold;
+}
+
+.sections {
+    padding: 30px;
+}
+
+.section {
+    margin-bottom: 40px;
+}
+
+.section h3 {
+    color: indigo;
+    border-bottom: 2px solid indigo;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+}
+
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.item-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.item-card h4 {
+    margin: 0 0 10px 0;
+    color: indigo;
+    font-size: 1.1rem;
+}
+
+.item-card p {
+    margin: 5px 0;
+    color: #666;
+}
+
+.item-card .price {
+    font-weight: bold;
+    color: #28a745;
+    font-size: 1.1rem;
+}
+
+.no-items {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+}
+
+.actions {
+    padding: 30px;
+    text-align: center;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 12px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: 2px solid;
+    display: inline-block;
+    min-width: 180px;
+}
+
+.btn-primary {
+    background: indigo;
+    color: white;
+    border-color: indigo;
+}
+
+.btn-primary:hover {
+    background: purple;
+    border-color: purple;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: indigo;
+    border-color: indigo;
+}
+
+.btn-secondary:hover {
+    background: indigo;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Media queries para responsividad */
+@media screen and (max-width: 768px) {
+    .main {
+        padding: 10px;
+    }
+    
+    .center {
+        border-radius: 15px;
+    }
+    
+    .header {
+        padding: 15px 20px;
+    }
+    
+    .header h1 {
+        font-size: 1.6rem;
+    }
+    
+    .header h2 {
+        font-size: 1.1rem;
+    }
+    
+    .navigation-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn-volver, .btn-agregar {
+        min-width: auto;
+    }
+    
+    .gym-info {
+        flex-direction: column;
+        padding: 20px;
+        gap: 20px;
+    }
+    
+    .gym-image {
+        flex: none;
+        align-self: center;
+        max-width: 250px;
+    }
+    
+    .sections {
+        padding: 20px;
+    }
+    
+    .items-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .actions {
+        padding: 20px;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .header {
+        padding: 12px 15px;
+    }
+    
+    .header h1 {
+        font-size: 1.4rem;
+    }
+    
+    .header h2 {
+        font-size: 1rem;
+    }
+    
+    .gym-info {
+        padding: 15px;
+    }
+    
+    .sections {
+        padding: 15px;
+    }
+    
+    .item-card {
+        padding: 15px;
+    }
+    
+    .actions {
+        padding: 15px;
+    }
+} 
