@@ -7,7 +7,7 @@ from django.conf.urls.static import static
 from .views import (
     RegistroUsuarioView, LoginView,
     GimnasioViewSet, RutinaViewSet, InventarioViewSet,
-    MaquinaViewSet, FavoritoViewSet
+    MaquinaViewSet, FavoritoViewSet,ReseñaViewSet
 )
 
 router = DefaultRouter()
@@ -16,6 +16,7 @@ router.register(r'rutinas', RutinaViewSet)
 router.register(r'inventario', InventarioViewSet)
 router.register(r'maquinas', MaquinaViewSet)
 router.register(r'favoritos', FavoritoViewSet)
+router.register(r'resenas', ReseñaViewSet)
 
 urlpatterns = [
     # Vistas HTML
@@ -39,4 +40,5 @@ urlpatterns = [
     path('api/registro/', RegistroUsuarioView.as_view(), name='api_registro'),
     path('api/login/', LoginView.as_view(), name='api_login'),
     path('api/', include(router.urls)),
+    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
