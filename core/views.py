@@ -26,6 +26,7 @@ from django.db.models import Count, Avg, Q
 from rest_framework.exceptions import PermissionDenied
 from .models import Gimnasio, Reseña, Usuario, Inventario, Maquina
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     return render(request, 'core/index.html')
@@ -315,13 +316,17 @@ def normalizar_estatura(estatura_str):
     except ValueError:
         return None
 
+@login_required
 def post_reg(request):
     if request.method == 'POST': # utilizado para añadir datos adicionales sobre el usuario, que se veran desplegados en su profile
         usuario = request.user
-        usuario.nombres = request.POST.get('nombres')
-        usuario.apellidos = request.POST.get('apellidos')
+        # Combinar nombres y apellidos en el campo nombre
+        nombres = request.POST.get('nombres', '')
+        apellidos = request.POST.get('apellidos', '')
+        usuario.nombre = f"{nombres} {apellidos}".strip()
         usuario.edad = request.POST.get('edad') or None
         usuario.telefono = request.POST.get('telefono')
+        usuario.direccion = request.POST.get('direccion', '')  # Agregar dirección
         
         # Normalizar la estatura
         estatura = request.POST.get('estatura')
@@ -452,10 +457,17 @@ def login_usuario(request):
                 except Gimnasio.DoesNotExist:
                     return JsonResponse({'mensaje': 'Inicio de sesión exitoso', 'redirect': '/register-gym/'})
             else:
-                return JsonResponse({'mensaje': 'Inicio de sesión exitoso', 'redirect': '/profile'})
+                # Verificar si el usuario necesita completar sus datos adicionales
+                if not usuario.telefono or not usuario.sexo:
+                    # Guardar el nombre del usuario en la sesión para el formulario
+                    request.session['nombre_usuario'] = usuario.nombre
+                    request.session['email_usuario'] = usuario.email
+                    return JsonResponse({'mensaje': 'Inicio de sesión exitoso', 'redirect': '/register/'})
+                else:
+                    return JsonResponse({'mensaje': 'Inicio de sesión exitoso', 'redirect': '/profile'})
         else:
             return JsonResponse({'error': 'correo y/o contraseña incorrecta'}, status=400)
-        
+
 def search(request):
     gimnasios = Gimnasio.objects.all()  
     return render(request, 'core/search.html', {'gimnasios': gimnasios})

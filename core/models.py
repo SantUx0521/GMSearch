@@ -27,8 +27,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     peso = models.FloatField(null=True, blank=True)
     sexo = models.CharField(max_length=10, choices=[('M', 'Masculino'), ('F', 'Femenino')], null=True, blank=True)
     foto_perfil = models.ImageField(upload_to='perfiles/', null=True, blank=True)
-    direccion = models.CharField(max_length=255)
-    telefono = models.CharField(max_length=20)
+    direccion = models.CharField(max_length=255, null=True, blank=True)
+    telefono = models.CharField(max_length=20, null=True, blank=True)
     es_dueño = models.BooleanField(default=False)
     #verificacion de email
     is_active = models.BooleanField(default=False)
