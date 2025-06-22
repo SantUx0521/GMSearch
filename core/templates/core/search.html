@@ -309,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 window.location.href = "/buscar/";
                             } else {
                                 res.json().then(data => {
-                                    alert("Debes iniciar sesion para calificar un gimnasio.");
+                                    alert("Solo se puede realizar una reseña por persona.");
                                 });
                             }
                         })
@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             alert("Ocurrió un error: " + err);
                         });
                     });
-                }) // CIERRA EL .then(data => { ... })
+                }) 
                 .catch(err => {
                     console.error("Error al cargar los datos:", err);
                 });

@@ -170,6 +170,8 @@ ul li {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.5);
     transform: translateY(-1px);
+    border: 1px solid;
+    border-radius: 25px;
 }
 
 .account-text {
@@ -239,6 +241,7 @@ ul li {
 .dropdown-item:hover {
     background-color: #f8f9fa;
     color: indigo;
+    border-radius: 25px;
 }
 
 .dropdown-item i {
@@ -249,6 +252,7 @@ ul li {
 
 .dropdown-item:hover i {
     color: indigo;
+    border-radius: 25px;
 }
 
 .links-div {
@@ -439,7 +443,7 @@ ul li {
   }
 }
 
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 905px) {
   .main .center .h1 {
     font-size: 80px;
   }
@@ -516,7 +520,7 @@ ul li {
   }
 }
 
-@media screen and (max-width: 580px) {
+@media screen and (max-width: 1020px) {
   .signup ul {
     flex-direction: column;
     align-items: flex-end;  
