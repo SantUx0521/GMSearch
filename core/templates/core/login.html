@@ -28,7 +28,9 @@
           <span></span>
         </div>
 
-        <div class="recordar">¿Olvidó su contraseña?</div>
+        <div class="recordar">
+          <a href="{% url 'forgot_password' %}">¿Olvidó su contraseña?</a>
+        </div>
         <input type="submit" value="Iniciar sesión">
         <div class="registrarse">
           <a href="{% url 'register' %}">Registrarse</a>

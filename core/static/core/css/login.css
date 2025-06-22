@@ -84,6 +84,20 @@ form .Username{
 }
 .recordar{
     text-decoration: underline;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.recordar a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.recordar a:hover {
+    color: #5a67d8;
+    text-decoration: underline;
 }
 input[type="submit"]{
     width: 100%;

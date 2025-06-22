@@ -25,6 +25,7 @@ from django.contrib.auth import logout
 from django.db.models import Count, Avg, Q
 from rest_framework.exceptions import PermissionDenied
 from .models import Gimnasio, Reseña, Usuario, Inventario, Maquina
+from django.urls import reverse
 
 def index(request):
     return render(request, 'core/index.html')
@@ -1091,5 +1092,120 @@ def admin_eliminar_gimnasio(request, gimnasio_id):
     }
     
     return render(request, 'core/admin_eliminar_gimnasio.html', context)
+
+# ----------------------------
+# Recuperación de Contraseña
+# ----------------------------
+
+def forgot_password(request):
+    """Vista para solicitar recuperación de contraseña"""
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            usuario = Usuario.objects.get(email=email)
+            
+            # Generar token de recuperación
+            import secrets
+            token = secrets.token_urlsafe(32)
+            usuario.token_verificacion = token
+            usuario.fecha_token = timezone.now()
+            usuario.save()
+            
+            # Enviar email de recuperación
+            reset_url = request.build_absolute_uri(
+                reverse('reset_password', kwargs={'token': token})
+            )
+            
+            try:
+                send_mail(
+                    'Recuperación de Contraseña - GMSearch',
+                    f'''Hola {usuario.nombre},
+
+Has solicitado recuperar tu contraseña en GMSearch.
+
+Para cambiar tu contraseña, haz clic en el siguiente enlace:
+{reset_url}
+
+Este enlace expirará en 24 horas.
+
+Si no solicitaste este cambio, puedes ignorar este email.
+
+Saludos,
+Equipo GMSearch''',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    fail_silently=False,
+                )
+                
+                return render(request, 'core/forgot_password.html', {
+                    'mensaje': 'Se ha enviado un email con las instrucciones para recuperar tu contraseña.',
+                    'tipo': 'success'
+                })
+                
+            except Exception as e:
+                return render(request, 'core/forgot_password.html', {
+                    'mensaje': 'Error al enviar el email. Por favor, intenta nuevamente.',
+                    'tipo': 'error'
+                })
+                
+        except Usuario.DoesNotExist:
+            return render(request, 'core/forgot_password.html', {
+                'mensaje': 'No existe una cuenta con ese email.',
+                'tipo': 'error'
+            })
+    
+    return render(request, 'core/forgot_password.html')
+
+def reset_password(request, token):
+    """Vista para cambiar la contraseña con el token"""
+    try:
+        usuario = Usuario.objects.get(token_verificacion=token)
+        
+        # Verificar que el token no haya expirado (24 horas)
+        if usuario.fecha_token and (timezone.now() - usuario.fecha_token).days > 1:
+            return render(request, 'core/reset_password.html', {
+                'error': 'El enlace de recuperación ha expirado. Solicita uno nuevo.',
+                'token_valido': False
+            })
+        
+        if request.method == 'POST':
+            password1 = request.POST.get('password1')
+            password2 = request.POST.get('password2')
+            
+            if password1 != password2:
+                return render(request, 'core/reset_password.html', {
+                    'error': 'Las contraseñas no coinciden.',
+                    'token_valido': True,
+                    'token': token
+                })
+            
+            if len(password1) < 8:
+                return render(request, 'core/reset_password.html', {
+                    'error': 'La contraseña debe tener al menos 8 caracteres.',
+                    'token_valido': True,
+                    'token': token
+                })
+            
+            # Cambiar la contraseña
+            usuario.set_password(password1)
+            usuario.token_verificacion = None
+            usuario.fecha_token = None
+            usuario.save()
+            
+            return render(request, 'core/reset_password.html', {
+                'mensaje': 'Tu contraseña ha sido cambiada exitosamente. Ya puedes iniciar sesión.',
+                'token_valido': False
+            })
+        
+        return render(request, 'core/reset_password.html', {
+            'token_valido': True,
+            'token': token
+        })
+        
+    except Usuario.DoesNotExist:
+        return render(request, 'core/reset_password.html', {
+            'error': 'El enlace de recuperación no es válido.',
+            'token_valido': False
+        })
 
 

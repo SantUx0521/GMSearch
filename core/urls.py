@@ -60,6 +60,10 @@ urlpatterns = [
     path('admin-panel/gimnasios/<int:gimnasio_id>/editar/', views.admin_editar_gimnasio, name='admin_editar_gimnasio'),
     path('admin-panel/gimnasios/<int:gimnasio_id>/eliminar/', views.admin_eliminar_gimnasio, name='admin_eliminar_gimnasio'),
 
+    # Recuperación de Contraseña
+    path('forgot-password/', views.forgot_password, name='forgot_password'),
+    path('reset-password/<str:token>/', views.reset_password, name='reset_password'),
+
     # Endpoints API
     path('api/', include(router.urls)),
     path('api/registro/', RegistroUsuarioView.as_view(), name='api_registro'),
