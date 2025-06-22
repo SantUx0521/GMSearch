@@ -125,6 +125,8 @@ class MaquinaViewSet(viewsets.ModelViewSet):
     serializer_class = MaquinaSerializer
 
 
+
+
 # ----------------------------
 # Favoritos
 # ----------------------------
@@ -150,6 +152,15 @@ class FavoritoViewSet(viewsets.ModelViewSet):
             gimnasio_qs = gimnasio_qs.filter(calificacion__gte=calificacion)
 
         return queryset.filter(gimnasio__in=gimnasio_qs)
+#----------------------------
+# reseña 
+# ---------------------------       
+
+class ReseñaViewSet(viewsets.ModelViewSet):
+    queryset = Reseña.objects.all()
+    serializer_class = ReseñaSerializer
+
+
 
 #----------------------------
 # Login (HTML)
@@ -202,6 +213,10 @@ def register_page(request):
     if 'register-own' in request.path: #en caso de que el registro venga por parte de un dueño de gimnasio toma los datos del html correspondiente
         return render(request, 'core/registerOwn.html')
     return render(request, 'core/register.html')
+
+
+
+
 
 def verificar_email(request, token):
     try:
