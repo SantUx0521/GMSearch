@@ -13,11 +13,10 @@
             <div class="nav" id="nav">
                 <i class="fa fa-bars" id="menu-toggle" aria-hidden="true"></i>
                 <ul class="links desktop-links">
-                <li><a href="#">Más productos</a></li>
-                <li><a href="{% url 'buscar_gimnasios' %}?orden=precio">Precios más bajos</a></li>
-                <li><a href="#">Mejores reseñas</a></li>
-                <li><a href="#">Mayor cantidad de máquinas</a></li>
-                <li><a href="#">Ofertas</a></li>
+                    <li><a href="{% url 'buscar_gimnasios' %}?orden=productos">Más productos</a></li>
+                    <li><a href="{% url 'buscar_gimnasios' %}?orden=precio">Precios más bajos</a></li>
+                    <li><a href="{% url 'buscar_gimnasios' %}?orden=reseñas">Mejores reseñas</a></li>
+                    <li><a href="{% url 'buscar_gimnasios' %}?orden=maquinas">Mayor cantidad de máquinas</a></li>
                 </ul>
         </div>
         <div class="signup">
@@ -39,11 +38,10 @@
         
         <div class="links-div" id="mobile-menu">
                 <ul class="links">
-                <li><a href="#">Más productos</a></li>
-                <li><a href="{% url 'buscar_gimnasios' %}?orden=precio">Precios más bajos</a></li>
-                <li><a href="#">Mejores reseñas</a></li>
-                <li><a href="#">Mayor cantidad de máquinas</a></li>
-                <li><a href="#">Ofertas</a></li>
+                    <li><a href="{% url 'buscar_gimnasios' %}?orden=productos">Más productos</a></li>
+                    <li><a href="{% url 'buscar_gimnasios' %}?orden=precio">Precios más bajos</a></li>
+                    <li><a href="{% url 'buscar_gimnasios' %}?orden=reseñas">Mejores reseñas</a></li>
+                    <li><a href="{% url 'buscar_gimnasios' %}?orden=maquinas">Mayor cantidad de máquinas</a></li>
                 </ul>
             </div>
         </div>

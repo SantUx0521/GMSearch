@@ -58,7 +58,6 @@
             </div>
         </div>
         </div>
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.card').forEach(card => {
@@ -79,7 +78,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     const productosHtml = data.productos.map(p => `
                         <li><strong>${p.nombre_prod}:</strong> ${p.descripcion || 'Sin descripción'} — $${p.precio}</li>
                     `).join('');
-                    
 
                     document.getElementById('modal-body').innerHTML = `
                         <h1>${data.nombre_gym}</h1>
@@ -87,17 +85,67 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         <p><strong>Ubicación:</strong> ${data.ubicacion}</p>
                         <p><strong>Precio inscripción:</strong> $${data.precio_inscripcion}</p>
-                        <p><strong>Numero de contacto: </strong> ${data.numero || '<p>No se ha compartido informacion de contacto</p>'}</p>
+                        <p><strong>Numero de contacto:</strong> ${data.numero || 'No disponible'}</p>
                         <p><strong>Descripción:</strong> ${data.descripcion}</p>
                         <p><strong>Calificación:</strong> ${data.calificacion} ⭐</p>
 
                         <h3>Máquinas disponibles:</h3> <ul>${maquinasHtml || '<li>No se registraron máquinas.</li>'}</ul>
-
                         <h3>Productos disponibles:</h3> <ul>${productosHtml || '<li>No se registraron productos.</li>'}</ul>
-                        
+
+                        <h3>Califica este gimnasio:</h3>
+                        <div id="rating-stars">
+                            ${[1,2,3,4,5].map(num => `<i class="fa fa-star-o star" data-value="${num}" style="font-size: 24px; cursor: pointer;"></i>`).join('')}
+                        </div>
+                        <button id="enviar-resena" style="margin-top: 10px;">Enviar Calificación</button>
                     `;
+
                     document.getElementById('modal-gym').classList.remove('hidden');
-                })
+
+                    let estrellasSeleccionadas = 0;
+                    document.querySelectorAll('.star').forEach(star => {
+                        star.addEventListener('click', function () {
+                            estrellasSeleccionadas = parseInt(this.getAttribute('data-value'));
+                            document.querySelectorAll('.star').forEach(s => {
+                                s.classList.remove('selected');
+                            });
+                            for (let i = 0; i < estrellasSeleccionadas; i++) {
+                                document.querySelectorAll('.star')[i].classList.add('selected');
+                            }
+                        });
+                    });
+
+                    document.getElementById('enviar-resena').addEventListener('click', () => {
+                        if (!estrellasSeleccionadas) {
+                            alert("Selecciona una cantidad de estrellas");
+                            return;
+                        }
+
+                        fetch('/api/resenas/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': getCSRFToken()
+                            },
+                            body: JSON.stringify({
+                                gimnasio: gymId,
+                                estrellas: estrellasSeleccionadas
+                            })
+                        })
+                        .then(res => {
+                            if (res.ok) {
+                                alert("¡Gracias por tu reseña!");
+                                window.location.href = "/buscar/";
+                            } else {
+                                res.json().then(data => {
+                                    alert("Debes iniciar sesion para calificar un gimnasio.");
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            alert("Ocurrió un error: " + err);
+                        });
+                    });
+                }) // CIERRA EL .then(data => { ... })
                 .catch(err => {
                     console.error("Error al cargar los datos:", err);
                 });
@@ -109,7 +157,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-
+function getCSRFToken() {
+    let name = 'csrftoken';
+    let cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        let c = cookies[i].trim();
+        if (c.startsWith(name + '=')) {
+            return decodeURIComponent(c.substring(name.length + 1));
+        }
+    }
+    return null;
+}
 </script>
 </body>
 </html>

@@ -23,7 +23,9 @@ from datetime import timedelta
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth import logout
-from django.db.models import Avg
+from django.db.models import Count, Avg
+from rest_framework.exceptions import PermissionDenied
+from .models import Gimnasio, Reseña, Usuario, Inventario, Maquina
 
 def index(request):
     return render(request, 'core/index.html')
@@ -42,8 +44,14 @@ def buscar_gimnasios(request):
     else:
         gimnasios = Gimnasio.objects.all()
     
-    if orden == 'precios':
-        gimnasios = gimnasios.annotate(num_productos=count('productos')).order_by('-num_productos')
+    if orden == 'precio':
+        gimnasios = gimnasios.order_by('precio_inscripcion')
+    elif orden == 'reseñas':
+        gimnasios = gimnasios.annotate(promedio=Avg('resenas__estrellas')).order_by('-promedio')
+    elif orden == 'maquinas':
+        gimnasios = gimnasios.annotate(num_maquinas=Count('maquinas')).order_by('-num_maquinas')
+    elif orden == 'productos':
+        gimnasios = gimnasios.annotate(num_productos=Count('productos')).order_by('-num_productos')
     return render(request, 'core/search.html', {'query': query, 'gimnasios': gimnasios,  'orden': orden,})
 
 
@@ -156,11 +164,23 @@ class FavoritoViewSet(viewsets.ModelViewSet):
 # reseña 
 # ---------------------------       
 
-class ReseñaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Reseña
-        fields = '__all__'
-        read_only_fields = ['usuario']  # <- esto es lo importante
+class ReseñaViewSet(viewsets.ModelViewSet):
+    queryset = Reseña.objects.all()
+    serializer_class = ReseñaSerializer
+
+    def perform_create(self, serializer):
+
+        if not self.request.user.is_authenticated:
+            raise PermissionDenied("Debes iniciar sesión para dejar una reseña.")
+        
+        reseña = serializer.save(usuario=self.request.user)
+        gimnasio = reseña.gimnasio
+
+        reseñas = gimnasio.resenas.all()
+        promedio = reseñas.aggregate(models.Avg('estrellas'))['estrellas__avg']
+        gimnasio.calificacion = round(promedio, 2)
+        gimnasio.cantidad_resenas = reseñas.count()
+        gimnasio.save()
 
 
 #----------------------------
@@ -453,6 +473,7 @@ def gimnasio_detalle_api(request, gimnasio_id):
     data = {
         'nombre_gym': gym.nombre_gym,
         'ubicacion': gym.ubicacion,
+        "numero": gym.dueño.telefono or "No disponible",
         'precio_inscripcion': float(gym.precio_inscripcion),
         'descripcion': gym.descripcion,
         'imagen': gym.imagen.url if gym.imagen else '',
@@ -462,3 +483,5 @@ def gimnasio_detalle_api(request, gimnasio_id):
         'productos': productos,
     }
     return JsonResponse(data)
+
+

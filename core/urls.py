@@ -37,6 +37,7 @@ urlpatterns = [
     path('api/gimnasio/<int:gimnasio_id>/detalle/', views.gimnasio_detalle_api, name='gimnasio_detalle_api'),
 
     # Endpoints API
+    path('api/', include(router.urls)),
     path('api/registro/', RegistroUsuarioView.as_view(), name='api_registro'),
     path('api/login/', LoginView.as_view(), name='api_login'),
     path('api/', include(router.urls)),
