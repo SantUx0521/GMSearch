@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 from .models import (
     Usuario, Gimnasio, FichaBiometrica, ClienteGimnasio, Favorito,
-    Rutina, Maquina, Inventario
+    Rutina, Maquina, Inventario,Reseña
 )
 
 # ------------------------
@@ -81,4 +81,13 @@ class InventarioSerializer(serializers.ModelSerializer):
 class MaquinaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Maquina
+        fields = '__all__'
+
+# ------------------------
+# Maquinas
+# ------------------------
+
+class ReseñaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reseña
         fields = '__all__'
