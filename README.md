@@ -1,5 +1,6 @@
 # GMSearch - Plataforma de Búsqueda de Gimnasios
 
+
 Una aplicación web desarrollada en Django para buscar, gestionar y conectar usuarios con gimnasios.
 
 ## Características
