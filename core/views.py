@@ -156,10 +156,11 @@ class FavoritoViewSet(viewsets.ModelViewSet):
 # reseña 
 # ---------------------------       
 
-class ReseñaViewSet(viewsets.ModelViewSet):
-    queryset = Reseña.objects.all()
-    serializer_class = ReseñaSerializer
-
+class ReseñaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reseña
+        fields = '__all__'
+        read_only_fields = ['usuario']  # <- esto es lo importante
 
 
 #----------------------------
@@ -455,8 +456,9 @@ def gimnasio_detalle_api(request, gimnasio_id):
         'precio_inscripcion': float(gym.precio_inscripcion),
         'descripcion': gym.descripcion,
         'imagen': gym.imagen.url if gym.imagen else '',
-        "maquinas": maquinas_data,
+        'calificacion': round(gym.calificacion, 2),  # ⭐ Añadido
+        'cantidad_resenas': gym.cantidad_resenas,     # ⭐ Añadido
+        'maquinas': maquinas_data,
         'productos': productos,
     }
     return JsonResponse(data)
-
