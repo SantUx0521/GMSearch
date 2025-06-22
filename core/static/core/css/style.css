@@ -55,7 +55,7 @@ ul li {
 /* Estilos para el logo de casa (mismo que search.html) */
 .home-icon {
   position: absolute;
-  top: 1px;
+  top: 5px;
   left: 20px;
   font-size: 36px;
   color: rgb(169, 77, 235);
@@ -73,7 +73,7 @@ ul li {
 /* Estilos para el botón toggle */
 .toggle-options {
   position: absolute;
-  top: 10px;
+  top: 15px;
   left: 80px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -97,7 +97,7 @@ ul li {
 #searchOptions {
   display: none;
   position: absolute;
-  top: 10px;
+  top: 20px;
   left: 150px;
   flex-direction: row;
   gap: 15px;
@@ -384,19 +384,19 @@ ul li {
   /* Ajustes para móviles */
   .home-icon {
     font-size: 28px;
-    top: 5px;
+    top: -45px;
     left: 15px;
   }
   
   .toggle-options {
-    top: 8px;
+    top: -35px;
     left: 60px;
     padding: 6px 10px;
     font-size: 12px;
   }
   
   #searchOptions {
-    top: 8px;
+    top: -35px;
     left: 120px;
     gap: 8px;
   }
@@ -444,19 +444,19 @@ ul li {
   /* Ajustes para pantallas muy pequeñas */
   .home-icon {
     font-size: 24px;
-    top: 3px;
+    top: -40px;
     left: 10px;
   }
   
   .toggle-options {
-    top: 6px;
+    top: -30px;
     left: 50px;
     padding: 5px 8px;
     font-size: 11px;
   }
   
   #searchOptions {
-    top: 6px;
+    top: -30px;
     left: 100px;
     gap: 5px;
   }

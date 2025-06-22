@@ -11,6 +11,10 @@ body {
     min-height: 100vh;
 }
 
+.titulo {
+    margin-top: 60px;
+}
+
 .titulo h1 {
     color: whitesmoke;
     font-size: 70px;
@@ -20,7 +24,7 @@ body {
 .search-container {
     display: flex;
     justify-content: center;
-    margin: 20px 0;
+    margin: 30px 0;
 }
 
 .search-form {
@@ -51,14 +55,14 @@ body {
     text-align: center;
     color: white;
     font-size: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .contenedor-gimnasios {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
-    padding: 30px;
+    padding: 40px;
 }
 
 .card {
@@ -132,55 +136,15 @@ body {
 
 .home-icon {
   position: absolute;
-    top: 1px;
-    left: 20px;
-    font-size: 36px;
+  top: -50px;
+  left: 20px;
+  font-size: 36px;
   color: rgb(169, 77, 235);
   text-decoration: none;
   z-index: 999;
   transition: transform 0.2s ease;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
-
-.rating input { display: none; }
-.rating label {
-    font-size: 1.5em;
-    color: #ccc;
-    cursor: pointer;
-}
-.rating input:checked ~ label {
-    color: gold;
-}
-
-.modal button{
-    margin: 20px 1% auto;
-    width: 200px;
-    height: 50px;
-    border: 1px solid;
-    background: indigo;
-    border-radius: 25px;
-    font-size: 18px;
-    color: whitesmoke;
-    cursor: pointer;
-    outline: none;
-    display: block;
-}
-
-.modal button:hover{
-    border-color: purple;
-    background-color: rgb(41, 1, 70);
-    transition: .5s;
-}
-
-.star {
-        color: #ccc;
-        transition: color 0.2s ease;
-    }
-
-.star.selected {
-        color: gold;
-}
-
 
 .home-icon:hover {
   transform: scale(1.2);
@@ -190,7 +154,7 @@ body {
 /* Estilos para el botón toggle */
 .toggle-options {
   position: absolute;
-  top: 10px;
+  top: -40px;
   left: 80px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -214,7 +178,7 @@ body {
 .search-options {
   display: none;
   position: absolute;
-  top: 10px;
+  top: -40px;
   left: 150px;
   flex-direction: row;
   gap: 15px;
@@ -239,6 +203,141 @@ body {
   color: white;
 }
 
+/* Estilos para el botón Account unificado */
+.account-dropdown {
+  position: absolute;
+  top: -40px;
+  right: 20px;
+  z-index: 999;
+}
+
+.account-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.account-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.account-text {
+  font-weight: bold;
+}
+
+.account-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.account-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.account-avatar i {
+  font-size: 16px;
+  color: white;
+}
+
+/* Menú desplegable */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  min-width: 180px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  margin-top: 5px;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: indigo;
+}
+
+.dropdown-item i {
+  width: 16px;
+  text-align: center;
+  color: #666;
+}
+
+.dropdown-item:hover i {
+  color: indigo;
+}
+
+/* Botones de autenticación para usuarios no logueados */
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.auth-btn {
+  padding: 8px 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 25px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.auth-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+  color: white;
+}
+
 @keyframes fadeIn {
     from { opacity: 0; } to { opacity: 1; }
 }
@@ -251,14 +350,14 @@ body {
 /* Media queries para responsividad */
 @media screen and (max-width: 768px) {
   .toggle-options {
-    top: 8px;
+    top: -25px;
     left: 60px;
     padding: 6px 10px;
     font-size: 12px;
   }
   
   .search-options {
-    top: 8px;
+    top: -25px;
     left: 120px;
     gap: 8px;
   }
@@ -267,18 +366,69 @@ body {
     padding: 6px 10px;
     font-size: 10px;
   }
+  
+  /* Ajustes para Account en móviles */
+  .account-dropdown {
+    top: -25px;
+    right: 15px;
+  }
+  
+  .account-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    gap: 8px;
+  }
+  
+  .account-avatar {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .account-avatar i {
+    font-size: 14px;
+  }
+  
+  .dropdown-menu {
+    min-width: 160px;
+  }
+  
+  .dropdown-item {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  
+  .auth-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  .titulo {
+    margin-top: 60px;
+  }
+  
+  .search-container {
+    margin: 30px 0;
+  }
+  
+  .resultados {
+    margin-bottom: 30px;
+  }
+  
+  .contenedor-gimnasios {
+    padding: 40px;
+  }
 }
 
 @media screen and (max-width: 480px) {
   .toggle-options {
-    top: 6px;
+    top: -30px;
     left: 50px;
     padding: 5px 8px;
     font-size: 11px;
   }
   
   .search-options {
-    top: 6px;
+    top: -30px;
     left: 100px;
     gap: 5px;
   }
@@ -286,5 +436,56 @@ body {
   .option-link {
     padding: 4px 8px;
     font-size: 9px;
+  }
+  
+  /* Ajustes para Account en pantallas muy pequeñas */
+  .account-dropdown {
+    top: -30px;
+    right: 10px;
+  }
+  
+  .account-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+    gap: 6px;
+  }
+  
+  .account-avatar {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .account-avatar i {
+    font-size: 12px;
+  }
+  
+  .dropdown-menu {
+    min-width: 140px;
+  }
+  
+  .dropdown-item {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  
+  .auth-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+  
+  .titulo {
+    margin-top: 50px;
+  }
+  
+  .search-container {
+    margin: 25px 0;
+  }
+  
+  .resultados {
+    margin-bottom: 25px;
+  }
+  
+  .contenedor-gimnasios {
+    padding: 35px;
   }
 }

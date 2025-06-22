@@ -28,6 +28,40 @@
         <a href="{% url 'buscar_gimnasios' %}?orden=maquinas" class="option-link">Mayor cantidad de máquinas</a>
     </div>
 
+    <!-- Botón Account unificado -->
+    <div class="account-dropdown">
+        {% if user.is_authenticated %}
+        <button class="account-btn" id="accountBtn">
+            <span class="account-text">Account</span>
+            <div class="account-avatar">
+                {% if user.foto_perfil %}
+                    <img src="{{ user.foto_perfil.url }}" alt="Foto de perfil">
+                {% else %}
+                    <i class="fas fa-user"></i>
+                {% endif %}
+            </div>
+        </button>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <a href="{% url 'smart_profile' %}" class="dropdown-item">
+                <i class="fas fa-user"></i>
+                Ver perfil
+            </a>
+            <a href="#" onclick="document.getElementById('logout-form').submit(); return false;" class="dropdown-item">
+                <i class="fas fa-sign-out-alt"></i>
+                Cerrar sesión
+            </a>
+        </div>
+        <form id="logout-form" method="post" action="{% url 'logout' %}" style="display: none;">
+            {% csrf_token %}    
+        </form>
+        {% else %}
+        <div class="auth-buttons">
+            <a href="{% url 'login' %}" class="auth-btn">Iniciar Sesión</a>
+            <a href="{% url 'register' %}" class="auth-btn">Registrarse</a>
+        </div>
+        {% endif %}
+    </div>
+
     <div class="search-container">
         <form method="get" action="{% url 'buscar_gimnasios' %}" class="search-form">
             <input type="text" name="q" placeholder="Encuentra el gym ideal para ti..." value="{{ query|default:'' }}">
@@ -89,6 +123,32 @@ document.addEventListener('DOMContentLoaded', function () {
             isVisible = true;
         }
     });
+
+    // Script para el menú desplegable de Account
+    const accountBtn = document.getElementById('accountBtn');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    let isDropdownOpen = false;
+
+    if (accountBtn && dropdownMenu) {
+        accountBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (isDropdownOpen) {
+                dropdownMenu.classList.remove('show');
+                isDropdownOpen = false;
+            } else {
+                dropdownMenu.classList.add('show');
+                isDropdownOpen = true;
+            }
+        });
+
+        // Cerrar el menú al hacer clic fuera de él
+        document.addEventListener('click', function(e) {
+            if (!accountBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
+                isDropdownOpen = false;
+            }
+        });
+    }
 
     // Script existente para las cards
     document.querySelectorAll('.card').forEach(card => {
