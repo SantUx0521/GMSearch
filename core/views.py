@@ -82,13 +82,21 @@ class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-        usuario = authenticate(request, email=email, password=password)
-        if usuario:
-            token, created = Token.objects.get_or_create(user=usuario)
-            return Response({'token': token.key})
-        return Response({'error': 'Credenciales inválidas'}, status=400)
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            email = data.get('email')
+            password = data.get('password')
+            usuario = authenticate(request, username=email, password=password)
+
+            if usuario is not None:
+                # Verificar si el correo está verificado
+                if not usuario.email_verificado:
+                    return JsonResponse({'error': 'Debes verificar tu correo electrónico antes de iniciar sesión. Revisa tu bandeja de entrada.'}, status=400)
+                
+                login(request, usuario)
+                return JsonResponse({'mensaje': 'Inicio de sesión exitoso'})
+            else:
+                return JsonResponse({'error': 'correo y/o contraseña incorrecta'}, status=400)
     
     
 
@@ -248,15 +256,12 @@ def verificar_email(request, token):
             usuario.fecha_token = None
             usuario.save()
             
-            # Guardar datos en la sesión
-            request.session['nombre_usuario'] = usuario.nombre
-            request.session['email_usuario'] = usuario.email
-            
-            login(request, usuario)
-            if usuario.es_dueño:  
-                return redirect('reg_gym')  
-            else:
-                return redirect('post_reg')
+            # Redirigir a la página de login con mensaje de éxito
+            context = {
+                'es_dueño': usuario.es_dueño,
+                'nombre_usuario': usuario.nombre
+            }
+            return render(request, 'core/verificacion_exitosa.html', context)
         else:
             return render(request, 'core/token_expirado.html')
     except Usuario.DoesNotExist:
@@ -406,8 +411,22 @@ def login_usuario(request):
         usuario = authenticate(request, username=email, password=password)
 
         if usuario is not None:
+            # Verificar si el correo está verificado
+            if not usuario.email_verificado:
+                return JsonResponse({'error': 'Debes verificar tu correo electrónico antes de iniciar sesión. Revisa tu bandeja de entrada.'}, status=400)
+            
             login(request, usuario)
-            return JsonResponse({'mensaje': 'Inicio de sesión exitoso'})
+            
+            # Redirigir según el tipo de usuario
+            if usuario.es_dueño:
+                # Verificar si ya tiene un gimnasio registrado
+                try:
+                    gimnasio = Gimnasio.objects.get(dueño=usuario)
+                    return JsonResponse({'mensaje': 'Inicio de sesión exitoso', 'redirect': f'/gym-profile/{gimnasio.codigo_gym}/'})
+                except Gimnasio.DoesNotExist:
+                    return JsonResponse({'mensaje': 'Inicio de sesión exitoso', 'redirect': '/register-gym/'})
+            else:
+                return JsonResponse({'mensaje': 'Inicio de sesión exitoso', 'redirect': '/profile'})
         else:
             return JsonResponse({'error': 'correo y/o contraseña incorrecta'}, status=400)
         
@@ -610,6 +629,17 @@ def gimnasio_detalle_api(request, gimnasio_id):
         maquinas = gym.maquinas.all()
         maquinas_data = [{"nombre": m.nombre, "descripcion": m.descripcion} for m in maquinas]
         productos = list(gym.productos.values('nombre_prod', 'descripcion', 'precio'))
+        
+        # Obtener las reseñas del gimnasio
+        reseñas = gym.resenas.all().order_by('-fecha')
+        reseñas_data = []
+        for reseña in reseñas:
+            reseñas_data.append({
+                'usuario_nombre': reseña.usuario.nombre,
+                'estrellas': reseña.estrellas,
+                'texto': reseña.texto,
+                'fecha': reseña.fecha.isoformat()
+            })
     except Gimnasio.DoesNotExist:
         raise Http404("Gimnasio no encontrado")
 
@@ -624,6 +654,7 @@ def gimnasio_detalle_api(request, gimnasio_id):
         'cantidad_resenas': gym.cantidad_resenas,     # ⭐ Añadido
         'maquinas': maquinas_data,
         'productos': productos,
+        'resenas': reseñas_data,  # ⭐ Añadido
     }
     return JsonResponse(data)
 
@@ -686,33 +717,87 @@ def add_producto(request, gimnasio_id):
         return redirect('index')
 
 def delete_gym_account(request, gimnasio_id):
-    """Vista para eliminar la cuenta del gimnasio y todos sus datos"""
-    if request.method != 'POST':
-        return redirect('gym_profile', gimnasio_id=gimnasio_id)
-    
-    try:
-        gimnasio = Gimnasio.objects.get(pk=gimnasio_id)
-        
-        # Verificar que el usuario sea el dueño del gimnasio
-        if request.user != gimnasio.dueño:
+    if request.method == 'POST':
+        try:
+            gimnasio = Gimnasio.objects.get(codigo_gym=gimnasio_id, dueño=request.user)
+            # Eliminar el gimnasio (esto también eliminará las reseñas, máquinas, productos, etc.)
+            gimnasio.delete()
+            # Cerrar sesión del usuario
+            logout(request)
+            return redirect('index')
+        except Gimnasio.DoesNotExist:
             return redirect('gym_profile', gimnasio_id=gimnasio_id)
+    
+    return redirect('gym_profile', gimnasio_id=gimnasio_id)
+
+def gimnasio_resenas(request, gimnasio_id):
+    """Vista para mostrar todas las reseñas de un gimnasio específico"""
+    try:
+        gimnasio = Gimnasio.objects.get(codigo_gym=gimnasio_id)
+        reseñas = gimnasio.resenas.all().order_by('-fecha')
         
-        # Obtener el usuario dueño
-        usuario = gimnasio.dueño
-        
-        # Eliminar el gimnasio (esto también eliminará automáticamente todas las relaciones)
-        gimnasio.delete()
-        
-        # Eliminar el usuario
-        usuario.delete()
-        
-        # Cerrar sesión
-        logout(request)
-        
-        # Redirigir al inicio
-        return redirect('index')
-        
+        context = {
+            'gimnasio': gimnasio,
+            'reseñas': reseñas,
+        }
+        return render(request, 'core/gimnasio_resenas.html', context)
     except Gimnasio.DoesNotExist:
         return redirect('index')
+
+def reenviar_verificacion(request):
+    """Vista para reenviar el email de verificación"""
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            usuario = Usuario.objects.get(email=email)
+            if not usuario.email_verificado:
+                # Generar nuevo token de verificación
+                token = secrets.token_urlsafe(32)
+                fecha_expiracion = timezone.now() + timedelta(hours=24)
+                
+                usuario.token_verificacion = token
+                usuario.fecha_token = fecha_expiracion
+                usuario.save()
+                
+                # Enviar email de verificación
+                send_mail(
+                    'Verifica tu cuenta en GMSearch',
+                    f'Por favor, verifica tu cuenta haciendo clic en el siguiente enlace:\n\n'
+                    f'http://{request.get_host()}/verificar-email/{token}/\n\n'
+                    f'Este enlace expirará en 24 horas.',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    fail_silently=False,
+                )
+                
+                return render(request, 'core/verificacion_pendiente.html', {
+                    'mensaje': 'Se ha reenviado el email de verificación. Revisa tu bandeja de entrada.'
+                })
+            else:
+                return render(request, 'core/verificacion_pendiente.html', {
+                    'error': 'Este correo ya está verificado.'
+                })
+        except Usuario.DoesNotExist:
+            return render(request, 'core/verificacion_pendiente.html', {
+                'error': 'No se encontró una cuenta con este correo electrónico.'
+            })
+    
+    return render(request, 'core/reenviar_verificacion.html')
+
+def eliminar_cuenta_usuario(request):
+    """Vista para eliminar la cuenta del usuario"""
+    if request.method == 'POST':
+        try:
+            # Eliminar el usuario (esto también eliminará todas las relaciones)
+            usuario = request.user
+            usuario.delete()
+            # Cerrar sesión
+            logout(request)
+            return redirect('index')
+        except Exception as e:
+            # En caso de error, redirigir al perfil
+            return redirect('profile')
+    
+    return redirect('profile')
 
 

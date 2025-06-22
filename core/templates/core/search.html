@@ -187,7 +187,35 @@ document.addEventListener('DOMContentLoaded', function () {
                         <div id="rating-stars">
                             ${[1,2,3,4,5].map(num => `<i class="fa fa-star-o star" data-value="${num}" style="font-size: 24px; cursor: pointer;"></i>`).join('')}
                         </div>
+                        <div style="margin-top: 15px;">
+                            <label for="resena-texto" style="display: block; margin-bottom: 5px; font-weight: bold;">Reseña (opcional):</label>
+                            <textarea id="resena-texto" placeholder="Escribe tu opinión sobre este gimnasio..." style="width: 100%; height: 80px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; resize: vertical; font-family: inherit;"></textarea>
+                        </div>
                         <button id="enviar-resena" style="margin-top: 10px;">Enviar Calificación</button>
+
+                        <h3 style="margin-top: 30px; border-top: 2px solid #f0f0f0; padding-top: 20px;">Reseñas de otros usuarios:</h3>
+                        <div id="resenas-container">
+                            ${data.resenas && data.resenas.length > 0 ? 
+                                data.resenas.map(resena => `
+                                    <div style="background: #f9f9f9; border-radius: 8px; padding: 15px; margin-bottom: 15px; border-left: 4px solid #007bff;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                            <span style="font-weight: bold; color: #333;">${resena.usuario_nombre}</span>
+                                            <span style="color: #ffd700; font-size: 16px;">
+                                                ${'★'.repeat(resena.estrellas)}${'☆'.repeat(5-resena.estrellas)}
+                                            </span>
+                                        </div>
+                                        <div style="color: #666; font-size: 12px; margin-bottom: 8px;">
+                                            ${new Date(resena.fecha).toLocaleDateString('es-ES')}
+                                        </div>
+                                        ${resena.texto ? 
+                                            `<div style="color: #555; line-height: 1.4; font-style: italic;">"${resena.texto}"</div>` : 
+                                            '<div style="color: #999; font-style: italic;">Sin comentario adicional</div>'
+                                        }
+                                    </div>
+                                `).join('') : 
+                                '<p style="color: #666; font-style: italic; text-align: center;">No hay reseñas para este gimnasio aún.</p>'
+                            }
+                        </div>
                     `;
 
                     document.getElementById('modal-gym').classList.remove('hidden');
@@ -198,10 +226,35 @@ document.addEventListener('DOMContentLoaded', function () {
                             estrellasSeleccionadas = parseInt(this.getAttribute('data-value'));
                             document.querySelectorAll('.star').forEach(s => {
                                 s.classList.remove('selected');
+                                s.classList.remove('fa-star');
+                                s.classList.add('fa-star-o');
                             });
                             for (let i = 0; i < estrellasSeleccionadas; i++) {
-                                document.querySelectorAll('.star')[i].classList.add('selected');
+                                const starElement = document.querySelectorAll('.star')[i];
+                                starElement.classList.add('selected');
+                                starElement.classList.remove('fa-star-o');
+                                starElement.classList.add('fa-star');
                             }
+                        });
+
+                        // Efectos hover
+                        star.addEventListener('mouseenter', function() {
+                            const value = parseInt(this.getAttribute('data-value'));
+                            document.querySelectorAll('.star').forEach((s, index) => {
+                                if (index < value) {
+                                    s.style.color = '#ffd700';
+                                    s.style.transform = 'scale(1.1)';
+                                }
+                            });
+                        });
+
+                        star.addEventListener('mouseleave', function() {
+                            document.querySelectorAll('.star').forEach((s, index) => {
+                                if (!s.classList.contains('selected')) {
+                                    s.style.color = '#ddd';
+                                    s.style.transform = 'scale(1)';
+                                }
+                            });
                         });
                     });
 
@@ -211,6 +264,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             return;
                         }
 
+                        const resenaTexto = document.getElementById('resena-texto').value.trim();
+
                         fetch('/api/resenas/', {
                             method: 'POST',
                             headers: {
@@ -219,7 +274,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             },
                             body: JSON.stringify({
                                 gimnasio: gymId,
-                                estrellas: estrellasSeleccionadas
+                                estrellas: estrellasSeleccionadas,
+                                texto: resenaTexto
                             })
                         })
                         .then(res => {

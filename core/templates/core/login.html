@@ -60,7 +60,11 @@
         const data = await response.json();
 
         if (response.ok) {
-          window.location.href = "{% url 'index' %}";
+          if (data.redirect) {
+            window.location.href = data.redirect;
+          } else {
+            window.location.href = "{% url 'index' %}";
+          }
         } else {
           mensaje.textContent = data.error || "Error desconocido";
         }

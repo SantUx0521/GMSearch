@@ -121,9 +121,21 @@ class Reseña(models.Model):
     gimnasio = models.ForeignKey(Gimnasio, on_delete=models.CASCADE, related_name='resenas')
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     estrellas = models.IntegerField(choices=[(i, str(i)) for i in range(6)])
+    texto = models.TextField(max_length=500, blank=True, null=True, help_text="Reseña opcional (máximo 500 caracteres)")
     fecha = models.DateTimeField(auto_now_add=True)
+    editado = models.BooleanField(default=False)
+    fecha_edicion = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('usuario', 'gimnasio')
 
     def save(self, *args, **kwargs):
+        # Si ya existe una reseña y se está actualizando, marcar como editado
+        if self.pk:
+            self.editado = True
+            from django.utils import timezone
+            self.fecha_edicion = timezone.now()
+        
         super().save(*args, **kwargs)  # Guarda la nueva reseña en la base de datos
         
         gimnasio = self.gimnasio  # Obtiene el gimnasio relacionado

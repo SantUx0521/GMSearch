@@ -203,7 +203,116 @@ body {
   color: white;
 }
 
-/* Estilos para el botón Account unificado */
+/* Estilos para las estrellas de calificación ----------------------------------------------------------------*/
+#rating-stars {
+    display: flex;
+    gap: 5px;
+    margin: 10px 0;
+}
+
+.star {
+    color: #ddd;
+    transition: all 0.2s ease;
+    margin: 0 2px;
+}
+
+.star:hover {
+    color: #ffd700;
+    transform: scale(1.2);
+}
+
+.star.selected {
+    color: #ffd700;
+}
+
+.star.fa-star-o {
+    color: #ddd;
+}
+
+.star.fa-star {
+    color: #ffd700;
+}
+
+/* Efecto hover para pintar estrellas anteriores */
+.star:hover ~ .star {
+    color: #ddd;
+}
+
+.star:hover,
+.star:hover ~ .star {
+    color: #ffd700;
+}
+
+/* Estilos para el botón de enviar reseña */
+#enviar-resena {
+    background: indigo;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+#enviar-resena:hover {
+    background: purple;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Estilos para el campo de texto de reseñas */
+#resena-texto {
+    width: 100%;
+    height: 80px;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+    background: #fafafa;
+}
+
+#resena-texto:focus {
+    outline: none;
+    border-color: indigo;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(75, 0, 130, 0.1);
+}
+
+#resena-texto::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+/* Estilos para el contenedor de reseñas existentes */
+#resenas-container {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 15px;
+}
+
+#resenas-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+#resenas-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+#resenas-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+#resenas-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Estilos para el botón Account unificado ---------------------------------------------------------------------*/
 .account-dropdown {
   position: absolute;
   top: -40px;

@@ -36,6 +36,7 @@ body{
 .center form{
     padding: 0 50px;
     box-sizing: border-box;
+    text-align: center;
 }
 
 form .Username{
@@ -102,6 +103,8 @@ input[type="submit"]{
     color: whitesmoke;
     cursor: pointer;
     outline: none;
+    display: block;
+    margin: 0 auto;
 }
 
 input[type="submit"]:hover{
@@ -161,4 +164,25 @@ input[type="submit"]:hover{
   .main .center .search {
     width: 250px;
   }
+}
+
+/* Centrar el mensaje de error de contraseña */
+#password_error {
+    text-align: center;
+    margin: 10px 0;
+}
+
+/* Centrar el título */
+.center h1 {
+    text-align: center;
+    padding: 0 0 20px 0;
+    border-bottom: 1px solid silver;
+}
+
+/* Centrar párrafos */
+.center p {
+    text-align: center;
+    color: #666;
+    margin: 10px 0;
+    line-height: 1.5;
 }

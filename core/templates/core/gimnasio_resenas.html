@@ -1,0 +1,224 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reseñas - {{ gimnasio.nombre_gym }}</title>
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url('/static/core/css/img/fondo3.jpg');
+            color: black;
+            font-size: 1.2rem;
+            background-position: center center;
+            background-size: cover;
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .resenas-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .gimnasio-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .gimnasio-header h1 {
+            color: indigo;
+            margin-bottom: 10px;
+        }
+
+        .gimnasio-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .calificacion-promedio {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            color: indigo;
+        }
+
+        .estrellas-promedio {
+            color: #ffd700;
+            font-size: 20px;
+        }
+
+        .cantidad-resenas {
+            color: indigo;
+            font-size: 16px;
+        }
+
+        .resena-item {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid indigo;
+        }
+
+        .resena-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .usuario-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .usuario-nombre {
+            font-weight: bold;
+            color: indigo;
+        }
+
+        .fecha-resena {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .estrellas-resena {
+            color: #ffd700;
+            font-size: 18px;
+        }
+
+        .texto-resena {
+            color: #555;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .sin-texto {
+            color: #999;
+            font-style: italic;
+        }
+
+        .volver-btn {
+            display: inline-block;
+            background: indigo;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+
+        .volver-btn:hover {
+            background: purple;
+        }
+
+        .sin-resenas {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .resenas-container {
+                margin: 10px;
+                padding: 15px;
+            }
+
+            .gimnasio-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .resena-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="resenas-container">
+        <a href="{% url 'gym_profile' gimnasio.codigo_gym %}" class="volver-btn">
+            <i class="fas fa-arrow-left"></i> Volver al perfil
+        </a>
+
+        <div class="gimnasio-header">
+            <h1>{{ gimnasio.nombre_gym }}</h1>
+            <div class="gimnasio-info">
+                <div class="calificacion-promedio">
+                    <span class="estrellas-promedio">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= gimnasio.calificacion %}
+                                <i class="fas fa-star"></i>
+                            {% elif forloop.counter <= gimnasio.calificacion|add:0.5 %}
+                                <i class="fas fa-star-half-alt"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                    <span>{{ gimnasio.calificacion|floatformat:1 }}</span>
+                </div>
+                <div class="cantidad-resenas">
+                    {{ gimnasio.cantidad_resenas }} reseña{{ gimnasio.cantidad_resenas|pluralize }}
+                </div>
+            </div>
+        </div>
+
+        {% if reseñas %}
+            {% for reseña in reseñas %}
+                <div class="resena-item">
+                    <div class="resena-header">
+                        <div class="usuario-info">
+                            <span class="usuario-nombre">{{ reseña.usuario.nombre }}</span>
+                            <span class="fecha-resena">{{ reseña.fecha|date:"d/m/Y H:i" }}</span>
+                        </div>
+                        <div class="estrellas-resena">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= reseña.estrellas %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% if reseña.texto %}
+                        <div class="texto-resena">{{ reseña.texto }}</div>
+                    {% else %}
+                        <div class="sin-texto">Sin comentario adicional</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="sin-resenas">
+                <i class="far fa-comment-alt" style="font-size: 48px; color: #ccc; margin-bottom: 20px;"></i>
+                <p>No hay reseñas para este gimnasio aún.</p>
+                <p>¡Sé el primero en dejar una reseña!</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html> 

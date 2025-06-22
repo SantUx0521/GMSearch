@@ -31,7 +31,7 @@
                             {% for maquina in maquinas %}
                                 <div class="item-card">
                                     <div class="item-actions">
-                                        <a href="{% url 'delete_maquina' gimnasio.codigo_gym maquina.id %}" class="btn-delete" onclick="return confirm('¿Estás seguro de que quieres eliminar esta máquina?')">-</a>
+                                        <a href="#" class="btn-delete" data-url="{% url 'delete_maquina' gimnasio.codigo_gym maquina.id %}" data-nombre="{{ maquina.nombre }}" data-tipo="maquina">-</a>
                                         <a href="{% url 'edit_maquina' gimnasio.codigo_gym maquina.id %}" class="btn-edit">Editar</a>
                                     </div>
                                     <h4>{{ maquina.nombre }}</h4>
@@ -56,7 +56,7 @@
                             {% for producto in productos %}
                                 <div class="item-card">
                                     <div class="item-actions">
-                                        <a href="{% url 'delete_producto' gimnasio.codigo_gym producto.codigo_prod %}" class="btn-delete" onclick="return confirm('¿Estás seguro de que quieres eliminar este producto?')">-</a>
+                                        <a href="#" class="btn-delete" data-url="{% url 'delete_producto' gimnasio.codigo_gym producto.codigo_prod %}" data-nombre="{{ producto.nombre_prod }}" data-tipo="producto">-</a>
                                         <a href="{% url 'edit_producto' gimnasio.codigo_gym producto.codigo_prod %}" class="btn-edit">Editar</a>
                                     </div>
                                     <h4>{{ producto.nombre_prod }}</h4>
@@ -74,5 +74,61 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal de confirmación para eliminar -->
+    <div id="modalEliminacion" class="modal">
+        <div class="modal-content">
+            <h3>¿Estás seguro?</h3>
+            <p id="modalMessage">Esta acción eliminará permanentemente este elemento. Esta acción no se puede deshacer.</p>
+            <div class="modal-actions">
+                <button onclick="confirmarEliminacion()" class="btn-confirm-delete">Sí, eliminar</button>
+                <button onclick="cerrarModal()" class="btn-cancel-delete">No, cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let urlEliminacion = '';
+
+        // Agregar event listeners a todos los botones de eliminar
+        document.addEventListener('DOMContentLoaded', function() {
+            const botonesEliminar = document.querySelectorAll('.btn-delete');
+            
+            botonesEliminar.forEach(function(boton) {
+                boton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const url = this.getAttribute('data-url');
+                    const nombre = this.getAttribute('data-nombre');
+                    const tipo = this.getAttribute('data-tipo');
+                    
+                    urlEliminacion = url;
+                    const mensaje = tipo === 'maquina' 
+                        ? '¿Estás seguro de que quieres eliminar la máquina "' + nombre + '"? Esta acción no se puede deshacer.'
+                        : '¿Estás seguro de que quieres eliminar el producto "' + nombre + '"? Esta acción no se puede deshacer.';
+                    
+                    document.getElementById('modalMessage').textContent = mensaje;
+                    document.getElementById('modalEliminacion').style.display = 'flex';
+                });
+            });
+        });
+
+        function cerrarModal() {
+            document.getElementById('modalEliminacion').style.display = 'none';
+        }
+
+        function confirmarEliminacion() {
+            if (urlEliminacion) {
+                window.location.href = urlEliminacion;
+            }
+        }
+
+        // Cerrar modal si se hace clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalEliminacion');
+            if (event.target == modal) {
+                cerrarModal();
+            }
+        }
+    </script>
 </body>
 </html> 

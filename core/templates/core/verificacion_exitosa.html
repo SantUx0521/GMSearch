@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación Exitosa - GMSearch</title>
+    <link rel="stylesheet" href="{% static 'core/css/register.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .mensaje-exito {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .icon-exito {
+            font-size: 48px;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        .btn-login {
+            background: indigo;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .btn-login:hover {
+            background: purple;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .center p {
+            text-align: center;
+            color: #666;
+            margin: 20px 0;
+            line-height: 1.5;
+        }
+        
+        .center h1 {
+            text-align: center;
+        }
+        
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="center">
+            <div class="icon-exito">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1>¡Verificación Exitosa!</h1>
+            
+            <div class="mensaje-exito">
+                {% if es_dueño %}
+                    Tu correo electrónico ha sido verificado correctamente. Como dueño de gimnasio, podrás registrar tu gimnasio después de iniciar sesión.
+                {% else %}
+                    Tu correo electrónico ha sido verificado correctamente.
+                {% endif %}
+            </div>
+            
+            <p>Tu cuenta ya está activa y puedes iniciar sesión.</p>
+            
+            <div class="btn-container">
+                <a href="{% url 'login' %}" class="btn-login">Iniciar Sesión</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

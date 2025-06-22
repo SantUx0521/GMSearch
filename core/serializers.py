@@ -91,13 +91,4 @@ class ReseñaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reseña
         fields = '__all__'
-
-#----------------------------
-# reseña 
-# ---------------------------       
-
-class ReseñaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Reseña
-        fields = '__all__'
         read_only_fields = ['usuario']  # <- esto es lo importante
