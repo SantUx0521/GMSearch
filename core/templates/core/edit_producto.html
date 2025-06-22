@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Producto - {{ gimnasio.nombre_gym }}</title>
+    <link rel="stylesheet" href="{% static 'core/css/edit_gym_profile.css' %}">
+</head>
+<body>
+    <div class="main">
+        <div class="center">
+            <div class="header">
+                <h1>Editar Producto</h1>
+                <h2>{{ gimnasio.nombre_gym }}</h2>
+                <div class="navigation-buttons">
+                    <a href="{% url 'edit_inventory' gimnasio.codigo_gym %}" class="btn-volver">← Volver al inventario</a>
+                </div>
+            </div>
+
+            <form method="POST" class="edit-form">
+                {% csrf_token %}
+                
+                <div class="form-section">
+                    <h3>Información del Producto</h3>
+                    
+                    <div class="form-group">
+                        <label for="nombre_prod">Nombre del producto:</label>
+                        <input type="text" id="nombre_prod" name="nombre_prod" value="{{ producto.nombre_prod }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="precio">Precio:</label>
+                        <input type="number" id="precio" name="precio" value="{{ producto.precio }}" step="100" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descripcion">Descripción:</label>
+                        <textarea id="descripcion" name="descripcion" rows="4" required>{{ producto.descripcion }}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">Guardar cambios</button>
+                    <a href="{% url 'edit_inventory' gimnasio.codigo_gym %}" class="btn-cancel">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html> 

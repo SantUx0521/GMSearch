@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Inventario - {{ gimnasio.nombre_gym }}</title>
+    <link rel="stylesheet" href="{% static 'core/css/edit_inventory.css' %}">
+</head>
+<body>
+    <div class="main">
+        <div class="center">
+            <div class="header">
+                <h1>Editar Inventario</h1>
+                <h2>{{ gimnasio.nombre_gym }}</h2>
+                <div class="navigation-buttons">
+                    <a href="{% url 'gym_profile' gimnasio.codigo_gym %}" class="btn-volver">← Volver al perfil</a>
+                </div>
+            </div>
+
+            <div class="inventory-sections">
+                <!-- Sección de Máquinas -->
+                <div class="inventory-section">
+                    <div class="section-header">
+                        <h3>Máquinas ({{ maquinas.count }})</h3>
+                        <a href="{% url 'add_maquina' gimnasio.codigo_gym %}" class="btn-add">+</a>
+                    </div>
+                    
+                    {% if maquinas %}
+                        <div class="items-grid">
+                            {% for maquina in maquinas %}
+                                <div class="item-card">
+                                    <div class="item-actions">
+                                        <a href="{% url 'delete_maquina' gimnasio.codigo_gym maquina.id %}" class="btn-delete" onclick="return confirm('¿Estás seguro de que quieres eliminar esta máquina?')">-</a>
+                                        <a href="{% url 'edit_maquina' gimnasio.codigo_gym maquina.id %}" class="btn-edit">Editar</a>
+                                    </div>
+                                    <h4>{{ maquina.nombre }}</h4>
+                                    <p>{{ maquina.descripcion }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="no-items">No hay máquinas registradas</p>
+                    {% endif %}
+                </div>
+
+                <!-- Sección de Productos -->
+                <div class="inventory-section">
+                    <div class="section-header">
+                        <h3>Productos ({{ productos.count }})</h3>
+                        <a href="{% url 'add_producto' gimnasio.codigo_gym %}" class="btn-add">+</a>
+                    </div>
+                    
+                    {% if productos %}
+                        <div class="items-grid">
+                            {% for producto in productos %}
+                                <div class="item-card">
+                                    <div class="item-actions">
+                                        <a href="{% url 'delete_producto' gimnasio.codigo_gym producto.codigo_prod %}" class="btn-delete" onclick="return confirm('¿Estás seguro de que quieres eliminar este producto?')">-</a>
+                                        <a href="{% url 'edit_producto' gimnasio.codigo_gym producto.codigo_prod %}" class="btn-edit">Editar</a>
+                                    </div>
+                                    <h4>{{ producto.nombre_prod }}</h4>
+                                    <p class="price">${{ producto.precio }}</p>
+                                    {% if producto.descripcion %}
+                                        <p>{{ producto.descripcion }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="no-items">No hay productos registrados</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

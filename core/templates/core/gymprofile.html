@@ -6,16 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil del Gimnasio - {{ gimnasio.nombre_gym }}</title>
     <link rel="stylesheet" href="{% static 'core/css/gymprofile.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+    <!-- Ícono de casa para regresar al inicio -->
+    <a href="{% url 'index' %}" class="home-icon" title="Volver al inicio">
+        <i class="fas fa-home"></i>
+    </a>
+
     <div class="main">
         <div class="center">
             <div class="header">
                 <h1>Perfil del Gimnasio</h1>
                 <h2>{{ gimnasio.nombre_gym }}</h2>
                 <div class="navigation-buttons">
-                    <a href="{% url 'index' %}" class="btn-volver">← Volver al inicio</a>
-                    <a href="{% url 'post_register_gym' gimnasio.codigo_gym %}" class="btn-agregar">+ Agregar producto</a>
+                    <a href="{% url 'edit_gym_profile' gimnasio.codigo_gym %}" class="btn-editar">Editar perfil del gimnasio</a>
                 </div>
             </div>
 
@@ -29,6 +34,12 @@
                 </div>
 
                 <div class="gym-details">
+                    <div class="detail-item">
+                        <strong>Dueño:</strong> {{ gimnasio.dueño.nombre }}
+                    </div>
+                    <div class="detail-item">
+                        <strong>Correo:</strong> {{ gimnasio.dueño.email }}
+                    </div>
                     <div class="detail-item">
                         <strong>Ubicación:</strong> {{ gimnasio.ubicacion }}
                     </div>
@@ -51,6 +62,12 @@
                             {% endif %}
                         </span>
                     </div>
+                </div>
+            </div>
+
+            <div class="edit-inventory-section">
+                <div class="edit-inventory-buttons">
+                    <a href="{% url 'edit_inventory' gimnasio.codigo_gym %}" class="btn-edit-inventory">Editar máquinas y productos</a>
                 </div>
             </div>
 
@@ -92,10 +109,56 @@
             </div>
 
             <div class="actions">
-                <a href="{% url 'post_register_gym' gimnasio.codigo_gym %}" class="btn-primary">Agregar más productos</a>
-                <a href="{% url 'index' %}" class="btn-secondary">Ir al inicio</a>
+                <a href="#" class="btn-delete-account" onclick="confirmarEliminacion()">Eliminar cuenta</a>
             </div>
         </div>
     </div>
+
+    <!-- Modal de confirmación -->
+    <div id="modalEliminacion" class="modal">
+        <div class="modal-content">
+            <h3>¿Estás seguro?</h3>
+            <p>Esta acción eliminará permanentemente tu cuenta y todo el contenido del gimnasio. Esta acción no se puede deshacer.</p>
+            <div class="modal-actions">
+                <button onclick="eliminarCuenta()" class="btn-confirm-delete">Sí, eliminar cuenta</button>
+                <button onclick="cerrarModal()" class="btn-cancel-delete">No, cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmarEliminacion() {
+            document.getElementById('modalEliminacion').style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalEliminacion').style.display = 'none';
+        }
+
+        function eliminarCuenta() {
+            // Crear un formulario temporal para enviar la solicitud POST
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "{% url 'delete_gym_account' gimnasio.codigo_gym %}";
+            
+            // Agregar el token CSRF
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}';
+            form.appendChild(csrfToken);
+            
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        // Cerrar modal si se hace clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalEliminacion');
+            if (event.target == modal) {
+                cerrarModal();
+            }
+        }
+    </script>
 </body>
 </html>

@@ -384,19 +384,19 @@ ul li {
   /* Ajustes para móviles */
   .home-icon {
     font-size: 28px;
-    top: -45px;
+    top: 15px;
     left: 15px;
   }
   
   .toggle-options {
-    top: -35px;
+    top: 15px;
     left: 60px;
     padding: 6px 10px;
     font-size: 12px;
   }
   
   #searchOptions {
-    top: -35px;
+    top: 15px;
     left: 120px;
     gap: 8px;
   }
@@ -444,19 +444,19 @@ ul li {
   /* Ajustes para pantallas muy pequeñas */
   .home-icon {
     font-size: 24px;
-    top: -40px;
+    top: 10px;
     left: 10px;
   }
   
   .toggle-options {
-    top: -30px;
+    top: 10px;
     left: 50px;
     padding: 5px 8px;
     font-size: 11px;
   }
   
   #searchOptions {
-    top: -30px;
+    top: 10px;
     left: 100px;
     gap: 5px;
   }

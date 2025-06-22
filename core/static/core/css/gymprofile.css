@@ -13,6 +13,24 @@ body {
     box-sizing: border-box;
 }
 
+/* Ícono de casa */
+.home-icon {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 36px;
+    color: rgb(169, 77, 235);
+    text-decoration: none;
+    z-index: 999;
+    transition: transform 0.2s ease;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.home-icon:hover {
+    transform: scale(1.2);
+    color: rgb(167, 21, 167);
+}
+
 * {
     box-sizing: border-box;
 }
@@ -55,13 +73,12 @@ body {
 
 .navigation-buttons {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
 }
 
-.btn-volver, .btn-agregar {
+.btn-volver, .btn-editar, .btn-agregar {
     padding: 10px 20px;
     border-radius: 25px;
     text-decoration: none;
@@ -86,6 +103,28 @@ body {
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
+.btn-editar {
+    background: indigo;
+    color: white;
+    border-color: indigo;
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: 2px solid;
+    display: inline-block;
+    text-align: center;
+    min-width: 200px;
+}
+
+.btn-editar:hover {
+    background: purple;
+    border-color: purple;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
 .btn-agregar {
     background: indigo;
     color: white;
@@ -101,7 +140,7 @@ body {
 
 .gym-info {
     display: flex;
-    padding: 30px;
+    padding: 15px;
     gap: 30px;
     border-bottom: 1px solid #e0e0e0;
 }
@@ -153,6 +192,38 @@ body {
 .rating {
     color: #ff6b35;
     font-weight: bold;
+}
+
+.edit-inventory-section {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f8f9fa;
+}
+
+.edit-inventory-buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-edit-inventory {
+    background: indigo;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: 2px solid indigo;
+    display: inline-block;
+    text-align: center;
+    min-width: 200px;
+}
+
+.btn-edit-inventory:hover {
+    background: purple;
+    border-color: purple;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 .sections {
@@ -217,13 +288,128 @@ body {
 }
 
 .actions {
-    padding: 30px;
+    padding: 20px;
     text-align: center;
     border-top: 1px solid #e0e0e0;
     display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.btn-delete-account {
+    background: #dc3545;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: 2px solid #dc3545;
+    display: inline-block;
+    min-width: 180px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.btn-delete-account:hover {
+    background: #c82333;
+    border-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Modal de confirmación */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-content h3 {
+    color: #dc3545;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+.modal-content p {
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 15px;
     justify-content: center;
     flex-wrap: wrap;
+}
+
+.btn-confirm-delete,
+.btn-cancel-delete {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 200px;
+}
+
+.btn-confirm-delete {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-confirm-delete:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-cancel-delete {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-confirm-delete:hover,
+.btn-cancel-delete:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .btn-primary, .btn-secondary {
@@ -269,6 +455,12 @@ body {
         padding: 10px;
     }
     
+    .home-icon {
+        top: 15px;
+        left: 15px;
+        font-size: 30px;
+    }
+    
     .center {
         border-radius: 15px;
     }
@@ -290,7 +482,7 @@ body {
         align-items: stretch;
     }
     
-    .btn-volver, .btn-agregar {
+    .btn-volver, .btn-editar, .btn-agregar {
         min-width: auto;
     }
     
@@ -324,11 +516,30 @@ body {
         width: 100%;
         max-width: 300px;
     }
+    
+    .edit-inventory-section {
+        padding: 15px 20px;
+    }
+    
+    .edit-inventory-buttons {
+        justify-content: center;
+    }
+    
+    .btn-edit-inventory {
+        width: 100%;
+        max-width: 300px;
+    }
 }
 
 @media screen and (max-width: 480px) {
     .header {
         padding: 12px 15px;
+    }
+    
+    .home-icon {
+        top: 10px;
+        left: 10px;
+        font-size: 28px;
     }
     
     .header h1 {

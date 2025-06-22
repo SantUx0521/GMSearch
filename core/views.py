@@ -441,40 +441,9 @@ def register_gym(request):
         request.user.telefono = numero
         request.user.save()
 
-        return redirect('post_register_gym', gimnasio_id=gimnasio.codigo_gym)
+        return redirect('gym_profile', gimnasio_id=gimnasio.codigo_gym)
 
     return render(request, 'core/registerGym.html')
-
-def post_register_gym(request, gimnasio_id):
-    gimnasio = Gimnasio.objects.get(pk=gimnasio_id)
-
-    if request.method == 'POST':
-        # Datos para las maquinas
-        nombre_maquina = request.POST.get('nombre_maquina')
-        cantidad = request.POST.get('cantidad_maquina')
-        categoria = request.POST.get('categoria')
-
-        if nombre_maquina and cantidad and categoria:
-            Maquina.objects.create(
-                gimnasio=gimnasio,
-                nombre=nombre_maquina,
-                descripcion=f"{categoria} - Cantidad: {cantidad}"
-            )
-
-        # Datos para los productos
-        inventario = request.POST.get('inventario')
-        precio = request.POST.get('precio')
-        if inventario:
-            Inventario.objects.create(
-                gimnasio=gimnasio,
-                nombre_prod=inventario,
-                precio=precio, 
-            )
-        
-        # Redirigir al perfil del gimnasio después de guardar
-        return redirect('gym_profile', gimnasio_id=gimnasio_id)
-
-    return render(request, 'core/gymData.html', {'gimnasio': gimnasio})
 
 def gym_profile(request, gimnasio_id):
     """Vista para mostrar el perfil del gimnasio"""
@@ -490,6 +459,149 @@ def gym_profile(request, gimnasio_id):
         }
         return render(request, 'core/gymprofile.html', context)
     except Gimnasio.DoesNotExist:
+        return redirect('index')
+
+def edit_gym_profile(request, gimnasio_id):
+    """Vista para editar el perfil del gimnasio"""
+    try:
+        gimnasio = Gimnasio.objects.get(pk=gimnasio_id)
+        
+        # Verificar que el usuario sea el dueño del gimnasio
+        if request.user != gimnasio.dueño:
+            return redirect('gym_profile', gimnasio_id=gimnasio_id)
+        
+        if request.method == 'POST':
+            # Actualizar los datos del gimnasio
+            gimnasio.nombre_gym = request.POST.get('nombre_gym', gimnasio.nombre_gym)
+            gimnasio.ubicacion = request.POST.get('ubicacion', gimnasio.ubicacion)
+            gimnasio.precio_inscripcion = request.POST.get('precio_inscripcion', gimnasio.precio_inscripcion)
+            gimnasio.descripcion = request.POST.get('descripcion', gimnasio.descripcion)
+            
+            # Actualizar imagen si se proporciona una nueva
+            if 'imagen' in request.FILES:
+                gimnasio.imagen = request.FILES['imagen']
+            
+            # Actualizar datos del dueño
+            request.user.nombre = request.POST.get('nombre_dueno', request.user.nombre)
+            request.user.email = request.POST.get('email_dueno', request.user.email)
+            request.user.telefono = request.POST.get('contacto', request.user.telefono)
+            
+            gimnasio.save()
+            request.user.save()
+            
+            # Redirigir al perfil del gimnasio después de guardar
+            return redirect('gym_profile', gimnasio_id=gimnasio_id)
+        
+        context = {
+            'gimnasio': gimnasio,
+        }
+        return render(request, 'core/edit_gym_profile.html', context)
+    except Gimnasio.DoesNotExist:
+        return redirect('index')
+
+def edit_inventory(request, gimnasio_id):
+    """Vista para editar máquinas y productos del gimnasio"""
+    try:
+        gimnasio = Gimnasio.objects.get(pk=gimnasio_id)
+        
+        # Verificar que el usuario sea el dueño del gimnasio
+        if request.user != gimnasio.dueño:
+            return redirect('gym_profile', gimnasio_id=gimnasio_id)
+        
+        # Obtener máquinas y productos del gimnasio
+        maquinas = gimnasio.maquinas.all()
+        productos = gimnasio.productos.all()
+        
+        context = {
+            'gimnasio': gimnasio,
+            'maquinas': maquinas,
+            'productos': productos,
+        }
+        return render(request, 'core/edit_inventory.html', context)
+    except Gimnasio.DoesNotExist:
+        return redirect('index')
+
+def delete_maquina(request, gimnasio_id, maquina_id):
+    """Vista para eliminar una máquina"""
+    try:
+        gimnasio = Gimnasio.objects.get(pk=gimnasio_id)
+        
+        # Verificar que el usuario sea el dueño del gimnasio
+        if request.user != gimnasio.dueño:
+            return redirect('gym_profile', gimnasio_id=gimnasio_id)
+        
+        maquina = Maquina.objects.get(pk=maquina_id, gimnasio=gimnasio)
+        maquina.delete()
+        
+        return redirect('edit_inventory', gimnasio_id=gimnasio_id)
+    except (Gimnasio.DoesNotExist, Maquina.DoesNotExist):
+        return redirect('index')
+
+def delete_producto(request, gimnasio_id, producto_id):
+    """Vista para eliminar un producto"""
+    try:
+        gimnasio = Gimnasio.objects.get(pk=gimnasio_id)
+        
+        # Verificar que el usuario sea el dueño del gimnasio
+        if request.user != gimnasio.dueño:
+            return redirect('gym_profile', gimnasio_id=gimnasio_id)
+        
+        producto = Inventario.objects.get(pk=producto_id, gimnasio=gimnasio)
+        producto.delete()
+        
+        return redirect('edit_inventory', gimnasio_id=gimnasio_id)
+    except (Gimnasio.DoesNotExist, Inventario.DoesNotExist):
+        return redirect('index')
+
+def edit_maquina(request, gimnasio_id, maquina_id):
+    """Vista para editar una máquina"""
+    try:
+        gimnasio = Gimnasio.objects.get(pk=gimnasio_id)
+        
+        # Verificar que el usuario sea el dueño del gimnasio
+        if request.user != gimnasio.dueño:
+            return redirect('gym_profile', gimnasio_id=gimnasio_id)
+        
+        maquina = Maquina.objects.get(pk=maquina_id, gimnasio=gimnasio)
+        
+        if request.method == 'POST':
+            maquina.nombre = request.POST.get('nombre', maquina.nombre)
+            maquina.descripcion = request.POST.get('descripcion', maquina.descripcion)
+            maquina.save()
+            return redirect('edit_inventory', gimnasio_id=gimnasio_id)
+        
+        context = {
+            'gimnasio': gimnasio,
+            'maquina': maquina,
+        }
+        return render(request, 'core/edit_maquina.html', context)
+    except (Gimnasio.DoesNotExist, Maquina.DoesNotExist):
+        return redirect('index')
+
+def edit_producto(request, gimnasio_id, producto_id):
+    """Vista para editar un producto"""
+    try:
+        gimnasio = Gimnasio.objects.get(pk=gimnasio_id)
+        
+        # Verificar que el usuario sea el dueño del gimnasio
+        if request.user != gimnasio.dueño:
+            return redirect('gym_profile', gimnasio_id=gimnasio_id)
+        
+        producto = Inventario.objects.get(pk=producto_id, gimnasio=gimnasio)
+        
+        if request.method == 'POST':
+            producto.nombre_prod = request.POST.get('nombre_prod', producto.nombre_prod)
+            producto.descripcion = request.POST.get('descripcion', producto.descripcion)
+            producto.precio = request.POST.get('precio', producto.precio)
+            producto.save()
+            return redirect('edit_inventory', gimnasio_id=gimnasio_id)
+        
+        context = {
+            'gimnasio': gimnasio,
+            'producto': producto,
+        }
+        return render(request, 'core/edit_producto.html', context)
+    except (Gimnasio.DoesNotExist, Inventario.DoesNotExist):
         return redirect('index')
 
 def gimnasio_detalle_api(request, gimnasio_id):
@@ -514,5 +626,93 @@ def gimnasio_detalle_api(request, gimnasio_id):
         'productos': productos,
     }
     return JsonResponse(data)
+
+def add_maquina(request, gimnasio_id):
+    """Vista para agregar una nueva máquina"""
+    try:
+        gimnasio = Gimnasio.objects.get(pk=gimnasio_id)
+        
+        # Verificar que el usuario sea el dueño del gimnasio
+        if request.user != gimnasio.dueño:
+            return redirect('gym_profile', gimnasio_id=gimnasio_id)
+        
+        if request.method == 'POST':
+            nombre = request.POST.get('nombre')
+            descripcion = request.POST.get('descripcion')
+            
+            if nombre and descripcion:
+                Maquina.objects.create(
+                    gimnasio=gimnasio,
+                    nombre=nombre,
+                    descripcion=descripcion
+                )
+                return redirect('edit_inventory', gimnasio_id=gimnasio_id)
+        
+        context = {
+            'gimnasio': gimnasio,
+        }
+        return render(request, 'core/add_maquina.html', context)
+    except Gimnasio.DoesNotExist:
+        return redirect('index')
+
+def add_producto(request, gimnasio_id):
+    """Vista para agregar un nuevo producto"""
+    try:
+        gimnasio = Gimnasio.objects.get(pk=gimnasio_id)
+        
+        # Verificar que el usuario sea el dueño del gimnasio
+        if request.user != gimnasio.dueño:
+            return redirect('gym_profile', gimnasio_id=gimnasio_id)
+        
+        if request.method == 'POST':
+            nombre_prod = request.POST.get('nombre_prod')
+            descripcion = request.POST.get('descripcion')
+            precio = request.POST.get('precio')
+            
+            if nombre_prod and descripcion and precio:
+                Inventario.objects.create(
+                    gimnasio=gimnasio,
+                    nombre_prod=nombre_prod,
+                    descripcion=descripcion,
+                    precio=precio
+                )
+                return redirect('edit_inventory', gimnasio_id=gimnasio_id)
+        
+        context = {
+            'gimnasio': gimnasio,
+        }
+        return render(request, 'core/add_producto.html', context)
+    except Gimnasio.DoesNotExist:
+        return redirect('index')
+
+def delete_gym_account(request, gimnasio_id):
+    """Vista para eliminar la cuenta del gimnasio y todos sus datos"""
+    if request.method != 'POST':
+        return redirect('gym_profile', gimnasio_id=gimnasio_id)
+    
+    try:
+        gimnasio = Gimnasio.objects.get(pk=gimnasio_id)
+        
+        # Verificar que el usuario sea el dueño del gimnasio
+        if request.user != gimnasio.dueño:
+            return redirect('gym_profile', gimnasio_id=gimnasio_id)
+        
+        # Obtener el usuario dueño
+        usuario = gimnasio.dueño
+        
+        # Eliminar el gimnasio (esto también eliminará automáticamente todas las relaciones)
+        gimnasio.delete()
+        
+        # Eliminar el usuario
+        usuario.delete()
+        
+        # Cerrar sesión
+        logout(request)
+        
+        # Redirigir al inicio
+        return redirect('index')
+        
+    except Gimnasio.DoesNotExist:
+        return redirect('index')
 
 

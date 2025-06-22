@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil del Gimnasio - {{ gimnasio.nombre_gym }}</title>
+    <link rel="stylesheet" href="{% static 'core/css/edit_gym_profile.css' %}">
+</head>
+<body>
+    <div class="main">
+        <div class="center">
+            <div class="header">
+                <h1>Editar Perfil del Gimnasio</h1>
+                <h2>{{ gimnasio.nombre_gym }}</h2>
+                <div class="navigation-buttons">
+                    <a href="{% url 'gym_profile' gimnasio.codigo_gym %}" class="btn-volver">← Volver al perfil</a>
+                </div>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" class="edit-form">
+                {% csrf_token %}
+                
+                <div class="form-section">
+                    <h3>Información del Gimnasio</h3>
+                    
+                    <div class="form-group">
+                        <label for="nombre_gym">Nombre del gimnasio:</label>
+                        <input type="text" id="nombre_gym" name="nombre_gym" value="{{ gimnasio.nombre_gym }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ubicacion">Ubicación:</label>
+                        <input type="text" id="ubicacion" name="ubicacion" value="{{ gimnasio.ubicacion }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="precio_inscripcion">Precio de inscripción:</label>
+                        <input type="number" id="precio_inscripcion" name="precio_inscripcion" value="{{ gimnasio.precio_inscripcion }}" step="1000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descripcion">Descripción:</label>
+                        <textarea id="descripcion" name="descripcion" rows="4" required>{{ gimnasio.descripcion }}</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="imagen">Imagen del gimnasio:</label>
+                        <div class="image-preview">
+                            {% if gimnasio.imagen %}
+                                <img src="{{ gimnasio.imagen.url }}" alt="Imagen actual" class="current-image">
+                            {% endif %}
+                            <input type="file" id="imagen" name="imagen" accept="image/*">
+                            <p class="help-text">Deja vacío para mantener la imagen actual</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Información del Dueño</h3>
+                    
+                    <div class="form-group">
+                        <label for="nombre_dueno">Nombre del dueño:</label>
+                        <input type="text" id="nombre_dueno" name="nombre_dueno" value="{{ gimnasio.dueño.nombre }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email_dueno">Correo electrónico:</label>
+                        <input type="email" id="email_dueno" name="email_dueno" value="{{ gimnasio.dueño.email }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contacto">Número de contacto:</label>
+                        <input type="text" id="contacto" name="contacto" value="{{ gimnasio.dueño.telefono|default:'' }}" required>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">Guardar cambios</button>
+                    <a href="{% url 'gym_profile' gimnasio.codigo_gym %}" class="btn-cancel">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html> 
